@@ -80,7 +80,7 @@ namespace EBankApp.Controllers
         public async Task<ActionResult> Register(User model)
         {
             int dbSaveResult = 0;
-            int NumberOfTransactions = 3;
+            int NumberOfTransactions = 2;
             if (ModelState.IsValid)
             {
                 try
