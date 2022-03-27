@@ -126,7 +126,7 @@ namespace EBankApp.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> UsernameExistsAsync(string username)
+        public async Task<JsonResult> UsernameExists(string username)
         {
             bool available = true;
             if (!string.IsNullOrEmpty(username))
@@ -200,7 +200,7 @@ namespace EBankApp.Controllers
 
         #region JS Methods
         [HttpGet]
-        public async Task<JsonResult> GetUsersAsync()
+        public async Task<JsonResult> GetUsers()
         {
             var list = await appDbContext.Users.ToListAsync();
             var json = JsonConvert.SerializeObject(list);
