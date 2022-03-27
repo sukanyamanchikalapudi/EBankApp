@@ -106,7 +106,7 @@ namespace EBankApp.Controllers
                     };
 
                     appDbContext.Accounts.Add(account);
-                    await appDbContext.SaveChangesAsync();
+                    dbSaveResult = await appDbContext.SaveChangesAsync();
                     await LogActivity(UserActivityEnum.USER_REGISTER);
                 }
                 catch (Exception e)
