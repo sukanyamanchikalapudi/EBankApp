@@ -1,0 +1,119 @@
+﻿@using EBankApp.Models
+@{
+    var user = HttpContext.Current.Session["User"] as User;
+    var accounts = HttpContext.Current.Session["Accounts"] as List<Account>;
+    bool isAuthenticated = user != null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=IBM+Plex+Sans+Arabic:wght@300&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/ef19713432.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="ebank-navbar">
+        <div class="logo">
+            EBank
+        </div>
+        <div class="navigation-links">
+            <ul>
+                @if (user == null)
+                {
+                    <li>@Html.ActionLink("Login", "Login", "User")</li>
+                    <li>@Html.ActionLink("Register", "Register", "User")</li>
+                }
+                else
+                {
+                    <li>@Html.ActionLink("Logout " + user.FirstName, "Logout", "User")</li>
+                }
+            </ul>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div>
+            @if (isAuthenticated)
+            {
+                <div class="sidebar">
+                    <header style="display:flex;flex-direction:column;">
+                        Hello! @user.FirstName
+                        <p style="font-size:x-small !important">
+                            @if (accounts.Any())
+                            {
+                                foreach (var item in accounts)
+                                {
+                                    <span> Account Number: <span class="eb-account-number">@item.AccountNumber</span> </span>
+                                }
+                            }
+                        </p>
+                    </header>
+
+                    <a href="" class="">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                    <a href="@Url.Action("MyProfile","User",new { userId = user.Id })">
+                        <i class="fas fa-user"></i><span>My Profile</span>
+                    </a>
+                    <a href="@Url.Action("MyAccounts","Account",new { userId = user.Id })">
+                        <i class="fas fa-door-closed"></i>   <span>MY ACCOUNTS</span>
+                    </a>
+                    <a href="@Url.Action("ManageUsers","User")">
+                        <i class="fas fa-users"></i>  <span>Manage Users</span>
+                    </a>
+                    <a href="@Url.Action("ManageAccounts","Account")">
+                        <i class="fas fa-user-cog"></i>  <span>Manage Accounts</span>
+                    </a>
+                    <a href="@Url.Action("QuickTransfer","Account")">
+                        <i class="fas fa-location-arrow"></i>
+                        <span>QUICK TRANSFER</span>
+                    </a>
+                    <a href="@Url.Action("ManageFunds","Account")">
+                        <i class="fas fa-pound-sign"></i>  <span>MANAGE FUNDS</span>
+                    </a>
+                </div>
+
+                <div class="page-body-content">
+                    @RenderBody()
+                </div>
+            }
+            else
+            {
+                <div class="page-body-content-noauth">
+                    @RenderBody()
+                </div>
+            }
+        </div>
+        <div class="loader" id="AjaxLoader" style="display:none;">
+            <div class="strip-holder">
+                <div class="strip-1"></div>
+                <div class="strip-2"></div>
+                <div class="strip-3"></div>
+            </div>
+        </div>
+        <footer>
+            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    @RenderSection("scripts", required: false)
+    <script>
+        //$(document)
+        //    .ajaxStart(function () {
+        //        $('#AjaxLoader').show();
+        //    })
+        //    .ajaxStop(function () {
+        //        $('#AjaxLoader').hide();
+        //    });
+    </script>
+</body>
+</html>

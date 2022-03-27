@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31727.386
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EBankApp", "EBankApp\EBankApp.csproj", "{E8007D15-6447-4D3D-A1BC-BE7A7297FCDB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EBankAPI", "EBankAPI\EBankAPI.csproj", "{AD0731A3-7352-4DB8-9793-EE8303A17072}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E8007D15-6447-4D3D-A1BC-BE7A7297FCDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8007D15-6447-4D3D-A1BC-BE7A7297FCDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8007D15-6447-4D3D-A1BC-BE7A7297FCDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8007D15-6447-4D3D-A1BC-BE7A7297FCDB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD0731A3-7352-4DB8-9793-EE8303A17072}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD0731A3-7352-4DB8-9793-EE8303A17072}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD0731A3-7352-4DB8-9793-EE8303A17072}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD0731A3-7352-4DB8-9793-EE8303A17072}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5ECA5E6C-6DFF-4489-804E-9EF3E60C7DE0}
+	EndGlobalSection
+EndGlobal

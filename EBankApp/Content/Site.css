@@ -1,0 +1,373 @@
+﻿.ebank-navbar {
+    position: absolute;
+    top: 0;
+    background-color: white;
+    width: -webkit-fill-available;
+    height: 40px;
+    display: flex;
+    justify-content: space-between;
+    box-shadow: 0px 0px 4px 1px;
+}
+
+    .ebank-navbar .navigation-links ul {
+        list-style: none;
+        display: flex;
+        align-items: center;
+    }
+
+.navigation-links {
+    display: flex;
+    align-items: center;
+}
+
+.ebank-navbar .navigation-links ul li {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+}
+
+ul {
+    margin:0;
+}
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    font-family: 'IBM Plex Sans Arabic', sans-serif;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    font-weight: 900;
+    font-size:x-large
+}
+
+    .ebank-navbar .navigation-links ul li a {
+        text-decoration: none;
+        cursor: pointer;
+        margin: 4px;
+    }
+
+.flex-container {
+    display: flex;
+}
+
+    .flex-container.flex-al-center {
+        align-items: center;
+    }
+
+/*!
+        // 3. Loader
+        // --------------------------------------------------*/
+.loader {
+    top: 0;
+    left: 0;
+    position: fixed;
+    opacity: 0.8;
+    z-index: 10000000;
+    background: Black;
+    height: 100%;
+    width: 100%;
+    margin: auto;
+}
+
+.strip-holder {
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    left: 50%;
+    margin-left: -50px;
+    position: relative;
+}
+
+.strip-1,
+.strip-2,
+.strip-3 {
+    width: 20px;
+    height: 20px;
+    background: #0072bc;
+    position: relative;
+    -webkit-animation: stripMove 2s ease infinite alternate;
+    animation: stripMove 2s ease infinite alternate;
+    -moz-animation: stripMove 2s ease infinite alternate;
+}
+
+.strip-2 {
+    -webkit-animation-duration: 2.1s;
+    animation-duration: 2.1s;
+    background-color: #23a8ff;
+}
+
+.strip-3 {
+    -webkit-animation-duration: 2.2s;
+    animation-duration: 2.2s;
+    background-color: #89d1ff;
+}
+
+@@-webkit-keyframes stripMove {
+    0% {
+        transform: translate3d(0px, 0px, 0px);
+        -webkit-transform: translate3d(0px, 0px, 0px);
+        -moz-transform: translate3d(0px, 0px, 0px);
+    }
+
+    50% {
+        transform: translate3d(0px, 0px, 0px);
+        -webkit-transform: translate3d(0px, 0px, 0px);
+        -moz-transform: translate3d(0px, 0px, 0px);
+        transform: scale(4, 1);
+        -webkit-transform: scale(4, 1);
+        -moz-transform: scale(4, 1);
+    }
+
+    100% {
+        transform: translate3d(-50px, 0px, 0px);
+        -webkit-transform: translate3d(-50px, 0px, 0px);
+        -moz-transform: translate3d(-50px, 0px, 0px);
+    }
+}
+
+@@-moz-keyframes stripMove {
+    0% {
+        transform: translate3d(-50px, 0px, 0px);
+        -webkit-transform: translate3d(-50px, 0px, 0px);
+        -moz-transform: translate3d(-50px, 0px, 0px);
+    }
+
+    50% {
+        transform: translate3d(0px, 0px, 0px);
+        -webkit-transform: translate3d(0px, 0px, 0px);
+        -moz-transform: translate3d(0px, 0px, 0px);
+        transform: scale(4, 1);
+        -webkit-transform: scale(4, 1);
+        -moz-transform: scale(4, 1);
+    }
+
+    100% {
+        transform: translate3d(50px, 0px, 0px);
+        -webkit-transform: translate3d(50px, 0px, 0px);
+        -moz-transform: translate3d(50px, 0px, 0px);
+    }
+}
+
+@@keyframes stripMove {
+    0% {
+        transform: translate3d(-50px, 0px, 0px);
+        -webkit-transform: translate3d(-50px, 0px, 0px);
+        -moz-transform: translate3d(-50px, 0px, 0px);
+    }
+
+    50% {
+        transform: translate3d(0px, 0px, 0px);
+        -webkit-transform: translate3d(0px, 0px, 0px);
+        -moz-transform: translate3d(0px, 0px, 0px);
+        transform: scale(4, 1);
+        -webkit-transform: scale(4, 1);
+        -moz-transform: scale(4, 1);
+    }
+
+    100% {
+        transform: translate3d(50px, 0px, 0px);
+        -webkit-transform: translate3d(50px, 0px, 0px);
+        -moz-transform: translate3d(50px, 0px, 0px);
+    }
+}
+
+@@import url('https://fonts.googleapis.com/css?family=Montserrat:600|Open+Sans:600&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+}
+
+.sidebar {
+    position: fixed;
+    width: 240px;
+    left: 0px;
+    top: 40px;
+    height: 100%;
+    background: #051c23;
+    transition: all .5s ease;
+}
+
+.ebank-navbar div {
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+.page-body-content {
+    background-color: #ffffff;
+    margin-left: 250px;
+    margin-top: 100px;
+    box-shadow: 0px 1px 5px;
+    padding:12px;
+}
+
+.page-body-content-noauth {
+    background-color: #ffffff;
+    margin-top: 100px;
+    padding: 12px;
+    margin-bottom:10px;
+    display:flex;
+    justify-content:center;
+}
+.form-horizontal {
+    width:900px;
+}
+
+.highlight-detail {
+    font-weight: 800;
+    font-style: normal;
+    font-size: larger;
+}
+.account-div {
+    padding: 12px;
+    box-shadow: 1px 2px 4px 0px;
+}
+
+.account-details-card {
+    margin-top:40px;
+}
+
+.sidebar header {
+    font-size: 24px;
+    color: white;
+    line-height: 70px;
+    text-align: center;
+    background: #293755;
+    user-select: none;
+}
+
+    .sidebar a {
+        display: block;
+        height: 65px;
+        width: 100%;
+        color: white;
+        line-height: 65px;
+        padding-left: 30px;
+        box-sizing: border-box;
+        border-bottom: 1px solid black;
+        border-top: 1px solid rgba(255,255,255,.1);
+        border-left: 5px solid transparent;
+        transition: all .5s ease;
+    }
+
+a.active, a:hover {
+    border-left: 5px solid #b93632;
+    color: #b93632;
+}
+
+.sidebar a i {
+    font-size: 23px;
+    margin-right: 16px;
+}
+
+.sidebar a span {
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+
+label #btn, label #cancel {
+    position: absolute;
+    cursor: pointer;
+    color: white;
+    border-radius: 5px;
+    border: 1px solid #262626;
+    margin: 15px 30px;
+    font-size: 29px;
+    background: #262626;
+    height: 45px;
+    width: 45px;
+    text-align: center;
+    line-height: 45px;
+    transition: all .5s ease;
+}
+
+
+@@media(max-width : 860px) {
+    .sidebar {
+        height: auto;
+        width: 70px;
+        left: 0;
+        margin: 100px 0;
+    }
+
+    header, #btn, #cancel {
+        display: none;
+    }
+
+    span {
+        position: absolute;
+        margin-left: 23px;
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    .sidebar a {
+        height: 60px;
+    }
+
+        .sidebar a i {
+            margin-left: -10px;
+        }
+
+    a:hover {
+        width: 200px;
+        background: inherit;
+    }
+
+    .sidebar a:hover span {
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+.content-area {
+    position: absolute;
+    left: 15%;
+    top: 12%;
+    right: 10%
+}
+
+.navbar-content {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.navbar-nav-list {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+    .navbar-nav-list > ul > a {
+        list-style: none;
+        text-decoration: none;
+    }
+
+*, body {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+.obligatory::after {
+    content: "*";
+    color: red;
+}
+
+.eb-account-number {
+    font-weight:bold;
+    font-size:15px;
+}
