@@ -146,11 +146,21 @@
     <Compile Include="Migrations\202203271419061_AddedExchangeEntity.Designer.cs">
       <DependentUpon>202203271419061_AddedExchangeEntity.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202203301340168_UpdatedEntity.cs" />
+    <Compile Include="Migrations\202203301340168_UpdatedEntity.Designer.cs">
+      <DependentUpon>202203301340168_UpdatedEntity.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202204011700388_updatedentities.cs" />
+    <Compile Include="Migrations\202204011700388_updatedentities.Designer.cs">
+      <DependentUpon>202204011700388_updatedentities.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Account.cs" />
     <Compile Include="Models\AccountCreateRequest.cs" />
     <Compile Include="Models\AccountTypeEnum.cs" />
     <Compile Include="Models\BaseEntity.cs" />
+    <Compile Include="Models\CurrencyCode.cs" />
+    <Compile Include="Models\ExchangeCurrencyRequest.cs" />
     <Compile Include="Models\Exchanges.cs" />
     <Compile Include="Models\LoginRequest.cs" />
     <Compile Include="Models\Notification.cs" />
@@ -170,6 +180,7 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Images\success.svg" />
     <Content Include="Content\Images\undraw_authentication_re_svpt.svg" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -189,6 +200,7 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\managefunds.vue.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\users.js" />
     <Content Include="Web.config" />
@@ -213,6 +225,7 @@
     <Content Include="Views\Account\ManageFunds.cshtml" />
     <Content Include="Views\Account\_QuickTransfer.cshtml" />
     <Content Include="Views\Account\Create.cshtml" />
+    <Content Include="Views\Base\Success.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -237,6 +250,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202203271419061_AddedExchangeEntity.resx">
       <DependentUpon>202203271419061_AddedExchangeEntity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202203301340168_UpdatedEntity.resx">
+      <DependentUpon>202203301340168_UpdatedEntity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202204011700388_updatedentities.resx">
+      <DependentUpon>202204011700388_updatedentities.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

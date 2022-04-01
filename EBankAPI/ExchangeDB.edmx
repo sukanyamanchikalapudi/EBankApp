@@ -11,7 +11,7 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="CurrencyCode" Type="nvarchar(max)" />
-          <Property Name="ExchangeValue_USD" Type="int" Nullable="false" />
+          <Property Name="ExchangeValue_USD" Type="float" Nullable="false" />
         </EntityType>
         <EntityContainer Name="EBankAppModelStoreContainer">
           <EntitySet Name="Exchanges" EntityType="Self.Exchanges" Schema="dbo" store:Type="Tables" />
@@ -27,7 +27,7 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="CurrencyCode" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="ExchangeValue_USD" Type="Int32" Nullable="false" />
+          <Property Name="ExchangeValue_USD" Type="Double" Nullable="false" />
         </EntityType>
         <EntityContainer Name="EBankAppEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Exchanges" EntityType="Self.Exchanges" />

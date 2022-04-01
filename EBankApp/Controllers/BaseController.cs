@@ -5,7 +5,7 @@ using System.Web.Mvc;
 
 namespace EBankApp.Controllers
 {
-    public class BaseController : Controller
+    public partial class BaseController : Controller
     {
         public readonly AppDbContext appDbContext;
         public const int ACCOUNT_NUMBER_LENGTH = 11;
@@ -39,6 +39,24 @@ namespace EBankApp.Controllers
             };
             appDbContext.UserActivities.Add(activity);
             await appDbContext.SaveChangesAsync();
+        }
+
+        public static CurrencyCode GetCurrencyTypeEnum(string currencyCode)
+        {
+            if (currencyCode == CurrencyCode.GBP.ToString())
+            {
+                return CurrencyCode.GBP;
+            }
+            else if (currencyCode == CurrencyCode.USD.ToString())
+            {
+                return CurrencyCode.USD;
+            }
+            return CurrencyCode.Unknown;
+        }
+
+        public ActionResult Success()
+        {
+            return View();
         }
     }
 }

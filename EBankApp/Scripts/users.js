@@ -1,5 +1,5 @@
 ﻿var dashboardApp = new Vue({
-    el: "#dashboardContainer",
+    el: "#usersContainer",
     data: {
         users: []
     },

@@ -17,7 +17,7 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=IBM+Plex+Sans+Arabic:wght@300&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/ef19713432.js" crossorigin="anonymous"></script>
 </head>
-<body>
+<body style=" background-color: #f0eeee;">
     <div class="ebank-navbar">
         <div class="logo">
             EBank
@@ -54,9 +54,9 @@
                         </p>
                     </header>
 
-                    <a href="" class="">
+                    <a href="@Url.Action("Dashboard","User")" class="">
                         <i class="fas fa-home"></i>
-                        <span>Home</span>
+                        <span>Dashboard</span>
                     </a>
                     <a href="@Url.Action("MyProfile","User",new { userId = user.Id })">
                         <i class="fas fa-user"></i><span>My Profile</span>
@@ -76,6 +76,9 @@
                     </a>
                     <a href="@Url.Action("ManageFunds","Account")">
                         <i class="fas fa-pound-sign"></i>  <span>MANAGE FUNDS</span>
+                    </a>
+                    <a href="@Url.Action("Success","Base")">
+                        <i class="fas fa-pound-sign"></i>  <span>Success </span>
                     </a>
                 </div>
 
@@ -107,13 +110,13 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
     @RenderSection("scripts", required: false)
     <script>
-        //$(document)
-        //    .ajaxStart(function () {
-        //        $('#AjaxLoader').show();
-        //    })
-        //    .ajaxStop(function () {
-        //        $('#AjaxLoader').hide();
-        //    });
+                                    //$(document)
+                                    //    .ajaxStart(function () {
+                                    //        $('#AjaxLoader').show();
+                                    //    })
+                                    //    .ajaxStop(function () {
+                                    //        $('#AjaxLoader').hide();
+                                    //    });
     </script>
 </body>
 </html>

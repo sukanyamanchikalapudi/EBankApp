@@ -16,6 +16,6 @@ namespace EBankAPI
     {
         public int Id { get; set; }
         public string CurrencyCode { get; set; }
-        public int ExchangeValue_USD { get; set; }
+        public double ExchangeValue_USD { get; set; }
     }
 }

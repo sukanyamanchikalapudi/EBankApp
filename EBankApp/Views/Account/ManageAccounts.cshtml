@@ -1,7 +1,32 @@
-﻿
+﻿@using EBankApp.Models;
+@using System.Web;
+
 @{
-    ViewBag.Title = "ManageAccounts";
+    ViewBag.Title = "Dashboard";
+    var user = HttpContext.Current.Session["User"] as User;
 }
 
-<h2>Manage Accounts</h2>
+<div id="accountsContainer">
+    <h2>Users</h2>
+    <table class="table table-condensed">
+        <thead>
+            <tr>
+                <th>AccountNumber</th>
+                <th>AccountBalance</th>
+                <th>AccountType</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="a in accounts">
+                <td>{{a.AccountNumber}}</td>
+                <td>{{a.AccountBalance}}</td>
+                <td>{{a.AccountType}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
+<input type="hidden" id="getAllAccounts" value="@Url.Action("GetAccounts","Account")" />
+@section scripts {
+    <script src="~/Scripts/accounts.js"></script>
+}

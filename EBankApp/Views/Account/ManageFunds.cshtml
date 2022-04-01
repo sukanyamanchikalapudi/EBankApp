@@ -1,26 +1,84 @@
-﻿
+﻿@using EBankApp.Models;
+@using System.Web;
+
 @{
     ViewBag.Title = "ManageFunds";
+    var user = HttpContext.Current.Session["User"] as User;
 }
 
 <h2>Manage Funds</h2>
 
-<div class="container">
+<div class="container" id="manageFundsApp">
     <ul class="nav nav-tabs">
-        <li class="active"><a data-toggle="tab" href="#home">Home</a></li>
-        <li><a data-toggle="tab" href="#menu1">Menu 1</a></li>
-        <li><a data-toggle="tab" href="#menu2">Menu 2</a></li>
+        <li class="active"><a data-toggle="tab" href="#ExchangeCurrency">Exchange Currency</a></li>
+        <li><a data-toggle="tab" href="#IntraBankTransfer">Intra-bank Transfer</a></li>
         <li><a data-toggle="tab" href="#menu3">Menu 3</a></li>
     </ul>
 
     <div class="tab-content">
-        <div id="home" class="tab-pane fade in active">
-            <h3>HOME</h3>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+        <div id="ExchangeCurrency" class="tab-pane fade in active">
+            <div class="row">
+                <div class="col-sm-6 p-20">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="from-currency">Account</label>
+                            <select class="form-control" id="from-currency" :value="exchangeMoney.accountNumber">
+                                <option v-for="account in accounts" v-bind:value="account.accountNumber">{{account.accountNumber}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="from-currency">From</label>
+                            <select class="form-control" id="from-currency" :value="exchangeMoney.From">
+                                <option v-for="currency in currencies" v:bind="currency">{{currency}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="to-currency">To</label>
+                            <select class="form-control" id="to-currency" :value="exchangeMoney.To">
+                                <option v-for="currency in currencies" v:bind="currency">{{currency}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Amount:</label>
+                            <input type="email" class="form-control" id="email" :value="exchangeMoney.amount" placeholder="Enter email" name="email">
+                        </div>
+                        <div class="form-group">
+                            <button type="button" v-on:click="exchangeMoneyFunc" class="btn btn-default">Exchange</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-sm-6 p-20">
+                    <ul class="list-group">
+                        <li class="list-group-item" v-for="account in accounts">Account Number: <span class="bold-900"> {{account.accountNumber}} </span>  | Available Balance: <span class="bold-900"> {{account.accountBalance}}</span></li>
+                    </ul>
+                </div>
+            </div>
+
         </div>
-        <div id="menu1" class="tab-pane fade">
-            <h3>Menu 1</h3>
-            <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+        <div id="IntraBankTransfer" class="tab-pane fade">
+            <div class="container p-20">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="from-currency">Account</label>
+                        <select class="form-control" id="from-currency">
+                            <option v-for="account in accounts" v-bind:value="account.accountNumber">{{account.accountNumber}}</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="from-currency">Account</label>
+                        <select class="form-control" id="from-currency">
+                            <option v-for="account in accounts" v-bind:value="account.accountNumber">{{account.accountNumber}}</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Amount:</label>
+                        <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-default">Confirm</button>
+                    </div>
+                </form>
+            </div>
         </div>
         <div id="menu2" class="tab-pane fade">
             <h3>Menu 2</h3>
@@ -32,3 +90,12 @@
         </div>
     </div>
 </div>
+<input type="hidden" id="exchangeActionUrl" value="" />
+<input type="hidden" id="currenciesUrl" value='@Url.Action("GetCurrencies", "Account")' />
+<input type="hidden" id="accountsUrl" value='@Url.Action("GetAccountDetails", "Account")' />
+<input type="hidden" id="userId" value="@user.Id" />
+@section scripts
+{
+    @Scripts.Render("~/Scripts/managefunds.vue.js")
+}
+

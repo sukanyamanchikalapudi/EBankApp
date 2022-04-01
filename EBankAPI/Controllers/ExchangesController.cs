@@ -17,103 +17,33 @@ namespace EBankAPI.Controllers
     {
         private EBankAppEntities db = new EBankAppEntities();
 
-        // GET: api/Exchanges
-        public IQueryable<Exchanges> GetExchanges()
+        [HttpGet]
+        public async Task<IHttpActionResult> GetById(string from, string to)
         {
-            return db.Exchanges;
+            var exchangeValue = await ReturnExchangeValue(from, to);
+            return Ok(new { Value = exchangeValue });
         }
 
-        // GET: api/Exchanges/5
-        [ResponseType(typeof(Exchanges))]
-        public async Task<IHttpActionResult> GetExchanges(int id)
+        [HttpGet]
+        public async Task<IHttpActionResult> GetCurrencies()
         {
-            Exchanges exchanges = await db.Exchanges.FindAsync(id);
-            if (exchanges == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(exchanges);
+            var currencies = await db.Exchanges.Select(x => x.CurrencyCode).ToListAsync();
+            return Ok(currencies);
         }
 
-        // PUT: api/Exchanges/5
-        [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutExchanges(int id, Exchanges exchanges)
+        private async Task<double> ReturnExchangeValue(string from, string to)
         {
-            if (!ModelState.IsValid)
+            if (from == CurrencyCode.GBP.ToString() && to == CurrencyCode.USD.ToString())
             {
-                return BadRequest(ModelState);
+                return await db.Exchanges.Where(x => x.CurrencyCode == CurrencyCode.GBP.ToString()).Select(x => x.ExchangeValue_USD).FirstOrDefaultAsync();
             }
-
-            if (id != exchanges.Id)
-            {
-                return BadRequest();
-            }
-
-            db.Entry(exchanges).State = EntityState.Modified;
-
-            try
-            {
-                await db.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ExchangesExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return StatusCode(HttpStatusCode.NoContent);
+            return 0.0;
         }
+    }
 
-        // POST: api/Exchanges
-        [ResponseType(typeof(Exchanges))]
-        public async Task<IHttpActionResult> PostExchanges(Exchanges exchanges)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            db.Exchanges.Add(exchanges);
-            await db.SaveChangesAsync();
-
-            return CreatedAtRoute("DefaultApi", new { id = exchanges.Id }, exchanges);
-        }
-
-        // DELETE: api/Exchanges/5
-        [ResponseType(typeof(Exchanges))]
-        public async Task<IHttpActionResult> DeleteExchanges(int id)
-        {
-            Exchanges exchanges = await db.Exchanges.FindAsync(id);
-            if (exchanges == null)
-            {
-                return NotFound();
-            }
-
-            db.Exchanges.Remove(exchanges);
-            await db.SaveChangesAsync();
-
-            return Ok(exchanges);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
-        private bool ExchangesExists(int id)
-        {
-            return db.Exchanges.Count(e => e.Id == id) > 0;
-        }
+    public enum CurrencyCode
+    {
+        USD,
+        GBP
     }
 }

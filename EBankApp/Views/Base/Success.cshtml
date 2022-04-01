@@ -1,0 +1,12 @@
+﻿@using EBankApp.Models
+
+@{
+    ViewBag.Title = "Success";
+    var user = HttpContext.Current.Session["User"] as User;
+}
+
+<div class="container success-page-div">
+    <h1>Transaction Successfull</h1>
+    <img src="~/Content/Images/success.svg" />
+    <a href="@Url.Action("MyProfile","User",new { userId = user.Id })" class="btn btn-success">Go to Dashboard</a>
+</div>

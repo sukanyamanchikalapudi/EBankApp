@@ -27,7 +27,7 @@
 }
 
 ul {
-    margin:0;
+    margin: 0;
 }
 
 body {
@@ -39,14 +39,14 @@ body {
     display: flex;
     align-items: center;
     font-weight: 900;
-    font-size:x-large
+    font-size: x-large
 }
 
-    .ebank-navbar .navigation-links ul li a {
-        text-decoration: none;
-        cursor: pointer;
-        margin: 4px;
-    }
+.ebank-navbar .navigation-links ul li a {
+    text-decoration: none;
+    cursor: pointer;
+    margin: 4px;
+}
 
 .flex-container {
     display: flex;
@@ -202,19 +202,20 @@ body {
     margin-left: 250px;
     margin-top: 100px;
     box-shadow: 0px 1px 5px;
-    padding:12px;
+    padding: 12px;
 }
 
 .page-body-content-noauth {
     background-color: #ffffff;
     margin-top: 100px;
     padding: 12px;
-    margin-bottom:10px;
-    display:flex;
-    justify-content:center;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
 }
+
 .form-horizontal {
-    width:900px;
+    width: 900px;
 }
 
 .highlight-detail {
@@ -222,13 +223,14 @@ body {
     font-style: normal;
     font-size: larger;
 }
+
 .account-div {
     padding: 12px;
-    box-shadow: 1px 2px 4px 0px;
+    box-shadow: 0px 0px 1px 0px;
 }
 
 .account-details-card {
-    margin-top:40px;
+    margin-top: 40px;
 }
 
 .sidebar header {
@@ -240,19 +242,19 @@ body {
     user-select: none;
 }
 
-    .sidebar a {
-        display: block;
-        height: 65px;
-        width: 100%;
-        color: white;
-        line-height: 65px;
-        padding-left: 30px;
-        box-sizing: border-box;
-        border-bottom: 1px solid black;
-        border-top: 1px solid rgba(255,255,255,.1);
-        border-left: 5px solid transparent;
-        transition: all .5s ease;
-    }
+.sidebar a {
+    display: block;
+    height: 65px;
+    width: 100%;
+    color: white;
+    line-height: 65px;
+    padding-left: 30px;
+    box-sizing: border-box;
+    border-bottom: 1px solid black;
+    border-top: 1px solid rgba(255,255,255,.1);
+    border-left: 5px solid transparent;
+    transition: all .5s ease;
+}
 
 a.active, a:hover {
     border-left: 5px solid #b93632;
@@ -368,6 +370,31 @@ textarea {
 }
 
 .eb-account-number {
-    font-weight:bold;
-    font-size:15px;
+    font-weight: bold;
+    font-size: 15px;
 }
+
+.p-20 {
+    padding: 8px;
+}
+
+
+.bold-900 {
+    font-weight: 900;
+}
+
+
+.success-page-div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 80vh;
+    flex-direction: column;
+    gap: 5rem;
+}
+
+
+    .success-page-div img {
+        width: 200px;
+        height: 200px;
+    }

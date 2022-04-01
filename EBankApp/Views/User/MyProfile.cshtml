@@ -78,22 +78,7 @@
         }
     </div>
     <div class="col-sm-6 col-lg-6">
-        @if (accounts.Any())
-        {
-            foreach (var account in accounts)
-            {
-                <div class="account-details-card">
-                    <div class="account-div">
-                        <p>Account number</p>
-                        <p class="highlight-detail">@account.AccountNumber</p>
-                        <p>Account Type</p>
-                        <p class="highlight-detail">@account.AccountType</p>
-                        <p>Available Balance</p>
-                        <p class="highlight-detail">@((account.AccountBalance).ToString("C", new CultureInfo("en-GB", false).NumberFormat))</p>
-                    </div>
-                </div>
-            }
-        }
+
     </div>
 </div>
 
