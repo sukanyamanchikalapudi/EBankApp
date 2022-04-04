@@ -27,7 +27,7 @@
                         {
                             <p class="highlight-detail">@((account.AccountBalance).ToString("C", new CultureInfo("en-GB", false).NumberFormat))</p>
                         }
-                        else if (account.Currency == (int)CurrencyCode.GBP)
+                        else if (account.Currency == (int)CurrencyCode.USD)
                         {
                             <p class="highlight-detail">@((account.AccountBalance).ToString("C", new CultureInfo("en-US", false).NumberFormat))</p>
                         }

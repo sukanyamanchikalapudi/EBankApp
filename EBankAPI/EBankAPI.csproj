@@ -180,7 +180,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ExchangeDB.edmx</DependentUpon>
     </Compile>
-    <Compile Include="Exchanges.cs">
+    <Compile Include="Exchanx.cs">
       <DependentUpon>ExchangeDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Global.asax.cs">

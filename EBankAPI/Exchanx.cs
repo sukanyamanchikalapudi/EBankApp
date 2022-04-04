@@ -12,10 +12,11 @@ namespace EBankAPI
     using System;
     using System.Collections.Generic;
     
-    public partial class Exchanges
+    public partial class Exchanx
     {
         public int Id { get; set; }
         public string CurrencyCode { get; set; }
         public double ExchangeValue_USD { get; set; }
+        public double ExchangeValue_GBP { get; set; }
     }
 }

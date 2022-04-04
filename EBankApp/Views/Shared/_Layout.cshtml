@@ -43,15 +43,6 @@
                 <div class="sidebar">
                     <header style="display:flex;flex-direction:column;">
                         Hello! @user.FirstName
-                        <p style="font-size:x-small !important">
-                            @if (accounts.Any())
-                            {
-                                foreach (var item in accounts)
-                                {
-                                    <span> Account Number: <span class="eb-account-number">@item.AccountNumber</span> </span>
-                                }
-                            }
-                        </p>
                     </header>
 
                     <a href="@Url.Action("Dashboard","User")" class="">
@@ -110,13 +101,13 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
     @RenderSection("scripts", required: false)
     <script>
-                                    //$(document)
-                                    //    .ajaxStart(function () {
-                                    //        $('#AjaxLoader').show();
-                                    //    })
-                                    //    .ajaxStop(function () {
-                                    //        $('#AjaxLoader').hide();
-                                    //    });
+                                                                                                                                //$(document)
+                                                                                                                                //    .ajaxStart(function () {
+                                                                                                                                //        $('#AjaxLoader').show();
+                                                                                                                                //    })
+                                                                                                                                //    .ajaxStop(function () {
+                                                                                                                                //        $('#AjaxLoader').hide();
+                                                                                                                                //    });
     </script>
 </body>
 </html>

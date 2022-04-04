@@ -13,5 +13,7 @@ namespace EBankApp.Models
         public string To { get; set; }
         [Required]
         public string Amount { get; set; }
+        [Required]
+        public string UserId { get; set; }
     }
 }

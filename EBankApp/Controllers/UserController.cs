@@ -102,12 +102,12 @@ namespace EBankApp.Controllers
                         AccountBalance = INITIAL_ACCOUNT_BALANCCE,
                         AccountNumber = EBankHelper.GenerateAccountNumber(ACCOUNT_NUMBER_LENGTH),
                         AccountType = AccountTypeEnum.SAVINGS,
-                        UserId = user.Id
+                        UserId = user.Id,
+                        Currency = (int)CurrencyCode.GBP
                     };
 
                     appDbContext.Accounts.Add(account);
                     dbSaveResult = await appDbContext.SaveChangesAsync();
-                    await LogActivity(UserActivityEnum.USER_REGISTER);
                 }
                 catch (Exception e)
                 {
@@ -118,6 +118,7 @@ namespace EBankApp.Controllers
                 if (dbSaveResult == NumberOfTransactions)
                 {
                     AttachToContext<User>("User", model);
+                    await LogActivity(UserActivityEnum.USER_REGISTER);
                     return RedirectToActionPermanent("Dashboard");
                 }
             }
@@ -136,7 +137,7 @@ namespace EBankApp.Controllers
                     available = await appDbContext.Users.AnyAsync(x => x.UserName == username) ? false : true;
                 }
 
-                Task.Delay(5000);
+                await Task.Delay(5000);
             }
             return Json(available);
         }
@@ -144,13 +145,8 @@ namespace EBankApp.Controllers
         [EBankAuthorized]
         public async Task<ActionResult> Dashboard()
         {
-            return View();
-        }
-
-        [HttpGet]
-        public async Task<ActionResult> Error()
-        {
-            await LogActivity(UserActivityEnum.ERROR_PAGE);
+            // update session.
+            await UpdateSession();
             return View();
         }
 
@@ -164,14 +160,37 @@ namespace EBankApp.Controllers
 
                 var accounts = await appDbContext.Accounts.Where(x => x.UserId == user.Id).ToListAsync();
 
-                // remove session.
-                RemoveFromContext("User");
-                RemoveFromContext("Accounts");
-                // update
-                AttachToContext<List<Account>>("Accounts", accounts);
-                AttachToContext<User>("User", user);
+                // update session.
+                await UpdateSession(userId);
 
                 return View(user);
+            }
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> MyProfile(string userId, User userModel)
+        {
+            await LogActivity(UserActivityEnum.MY_PROFILE);
+            using (appDbContext)
+            {
+                var user = await appDbContext.Users.FindAsync(Convert.ToInt32(userId));
+
+                user.FirstName = userModel.FirstName;
+                user.LastName = userModel.LastName;
+                user.Password = userModel.Password;
+                user.PIN = userModel.PIN;
+                user.UserName = userModel.UserName;
+                user.RoleId = userModel.RoleId;
+
+                await appDbContext.SaveChangesAsync();
+
+                var accounts = await appDbContext.Accounts.Where(x => x.UserId == user.Id).ToListAsync();
+
+                // update session.
+                await UpdateSession(userId);
+
+                return RedirectToAction("MyProfile", "User", new { userId = user.Id });
             }
             return View();
         }

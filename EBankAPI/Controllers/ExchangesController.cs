@@ -37,6 +37,10 @@ namespace EBankAPI.Controllers
             {
                 return await db.Exchanges.Where(x => x.CurrencyCode == CurrencyCode.GBP.ToString()).Select(x => x.ExchangeValue_USD).FirstOrDefaultAsync();
             }
+            else if (from == CurrencyCode.USD.ToString() && to == CurrencyCode.GBP.ToString())
+            {
+                return await db.Exchanges.Where(x => x.CurrencyCode == CurrencyCode.USD.ToString()).Select(x => x.ExchangeValue_GBP).FirstOrDefaultAsync();
+            }
             return 0.0;
         }
     }

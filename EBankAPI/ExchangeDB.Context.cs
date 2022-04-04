@@ -25,6 +25,6 @@ namespace EBankAPI
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<Exchanges> Exchanges { get; set; }
+        public virtual DbSet<Exchanx> Exchanges { get; set; }
     }
 }

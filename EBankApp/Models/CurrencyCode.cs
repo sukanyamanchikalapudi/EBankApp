@@ -3,7 +3,7 @@
     public enum CurrencyCode
     {
         Unknown,
-        USD,
-        GBP
+        GBP,
+        USD
     }
 }

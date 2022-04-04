@@ -12,6 +12,7 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="CurrencyCode" Type="nvarchar(max)" />
           <Property Name="ExchangeValue_USD" Type="float" Nullable="false" />
+          <Property Name="ExchangeValue_GBP" Type="float" Nullable="false" />
         </EntityType>
         <EntityContainer Name="EBankAppModelStoreContainer">
           <EntitySet Name="Exchanges" EntityType="Self.Exchanges" Schema="dbo" store:Type="Tables" />
@@ -21,16 +22,17 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="EBankAppModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityType Name="Exchanges">
+        <EntityType Name="Exchanx">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="CurrencyCode" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ExchangeValue_USD" Type="Double" Nullable="false" />
+          <Property Name="ExchangeValue_GBP" Type="Double" Nullable="false" />
         </EntityType>
         <EntityContainer Name="EBankAppEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Exchanges" EntityType="Self.Exchanges" />
+          <EntitySet Name="Exchanges" EntityType="Self.Exchanx" />
         </EntityContainer>
       </Schema>
     </edmx:ConceptualModels>
@@ -39,11 +41,12 @@
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="EBankAppModelStoreContainer" CdmEntityContainer="EBankAppEntities">
           <EntitySetMapping Name="Exchanges">
-            <EntityTypeMapping TypeName="EBankAppModel.Exchanges">
+            <EntityTypeMapping TypeName="EBankAppModel.Exchanx">
               <MappingFragment StoreEntitySet="Exchanges">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="CurrencyCode" ColumnName="CurrencyCode" />
                 <ScalarProperty Name="ExchangeValue_USD" ColumnName="ExchangeValue_USD" />
+                <ScalarProperty Name="ExchangeValue_GBP" ColumnName="ExchangeValue_GBP" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -61,7 +64,7 @@
     <Options>
       <DesignerInfoPropertySet>
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
-        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
         <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
         <DesignerProperty Name="UseLegacyProvider" Value="false" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
