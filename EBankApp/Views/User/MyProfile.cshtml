@@ -6,6 +6,7 @@
 @{
     ViewBag.Title = "My Profile";
     var accounts = HttpContext.Current.Session["Accounts"] as List<Account>;
+    var user = HttpContext.Current.Session["User"] as User;
 }
 
 <h2>My Profile</h2>
@@ -61,13 +62,16 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    @Html.LabelFor(model => model.RoleId, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.EditorFor(model => model.RoleId, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.RoleId, "", new { @class = "text-danger" })
+                @if (user.RoleId == (int)UserRoleEnum.Admin)
+                {
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.RoleId, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.RoleId, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.RoleId, "", new { @class = "text-danger" })
+                        </div>
                     </div>
-                </div>
+                }
 
                 <div class="form-group">
                     <div class="col-md-offset-2 col-md-10">

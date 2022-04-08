@@ -158,11 +158,22 @@ namespace EBankApp.Controllers
         {
             await LogActivity(UserActivityEnum.ACCOUNT_CREATE);
             int res = 0;
+            int id = -1;
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                id = GetCurrentUser.Id;
+            }
+            else
+            {
+                id = Convert.ToInt32(userId);
+            }
+
             using (appDbContext)
             {
                 appDbContext.Accounts.Add(new Account
                 {
-                    UserId = Convert.ToInt32(userId),
+                    UserId = id,
                     AccountNumber = EBankHelper.GenerateAccountNumber(11),
                     AccountType = accountCreate.AccountType,
                     AccountBalance = 0,
@@ -574,7 +585,6 @@ namespace EBankApp.Controllers
             public string AccountNumber { get; set; }
             public int UserId { get; set; }
         }
-
         public enum TransactionReportTime
         {
             THIS_WEEK,

@@ -57,12 +57,18 @@
                     <a href="@Url.Action("MyAccounts","Account",new { userId = user.Id })">
                         <i class="fas fa-door-closed"></i>   <span>MY ACCOUNTS</span>
                     </a>
-                    <a href="@Url.Action("ManageUsers","User")">
-                        <i class="fas fa-users"></i>  <span>Manage Users</span>
-                    </a>
-                    <a href="@Url.Action("ManageAccounts","Account")">
-                        <i class="fas fa-user-cog"></i>  <span>Manage Accounts</span>
-                    </a>
+                    @if (user.RoleId == (int)UserRoleEnum.Admin)
+                    {
+                        <a href="@Url.Action("ManageUsers","User")">
+                            <i class="fas fa-users"></i>  <span>Manage Users</span>
+                        </a>
+                        <a href="@Url.Action("ManageAccounts","Account")">
+                            <i class="fas fa-user-cog"></i>  <span>Manage Accounts</span>
+                        </a>
+                        <a href="@Url.Action("GetTransactions","Account")">
+                            <i class="fas fa-list-ul"></i>  <span>TRANSACTIONS</span>
+                        </a>
+                    }
                     <a href="@Url.Action("QuickTransfer","Account")">
                         <i class="fas fa-location-arrow"></i>
                         <span>QUICK TRANSFER</span>
@@ -70,9 +76,7 @@
                     <a href="@Url.Action("ManageFunds","Account")">
                         <i class="fas fa-pound-sign"></i>  <span>MANAGE FUNDS</span>
                     </a>
-                    <a href="@Url.Action("GetTransactions","Account")">
-                        <i class="fas fa-list-ul"></i>  <span>TRANSACTIONS</span>
-                    </a>
+
                     <a href="@Url.Action("DownloadTransactionReport","Account")">
                         <i class="fas fa-download"></i>  <span>TRANSACTION REPORT</span>
                     </a>
@@ -108,13 +112,13 @@
     <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
     @RenderSection("scripts", required: false)
     <script>
-                                                                            //$(document)
-                                                                            //    .ajaxStart(function () {
-                                                                            //        $('#AjaxLoader').show();
-                                                                            //    })
-                                                                            //    .ajaxStop(function () {
-                                                                            //        $('#AjaxLoader').hide();
-                                                                            //    });
+                                                                                        //$(document)
+                                                                                        //    .ajaxStart(function () {
+                                                                                        //        $('#AjaxLoader').show();
+                                                                                        //    })
+                                                                                        //    .ajaxStop(function () {
+                                                                                        //        $('#AjaxLoader').hide();
+                                                                                        //    });
     </script>
 </body>
 </html>

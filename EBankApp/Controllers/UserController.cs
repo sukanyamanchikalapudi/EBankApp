@@ -119,7 +119,6 @@ namespace EBankApp.Controllers
                 if (dbSaveResult == NumberOfTransactions)
                 {
                     AttachToContext<User>("User", model);
-                    await LogActivity(UserActivityEnum.USER_REGISTER);
                     return RedirectToActionPermanent("Dashboard");
                 }
             }
@@ -182,7 +181,11 @@ namespace EBankApp.Controllers
                 user.Password = userModel.Password;
                 user.PIN = userModel.PIN;
                 user.UserName = userModel.UserName;
-                user.RoleId = userModel.RoleId;
+
+                if (user.RoleId == (int)UserRoleEnum.Admin)
+                {
+                    user.RoleId = userModel.RoleId;
+                }
 
                 await appDbContext.SaveChangesAsync();
 
