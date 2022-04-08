@@ -1,0 +1,88 @@
+﻿@using EBankApp.Models;
+@using System.Web;
+
+@{
+    ViewBag.Title = "Transaction Report";
+    var user = HttpContext.Current.Session["User"] as User;
+}
+
+<h2>Transaction Reports</h2>
+<div class="container" id="transactionReportApp">
+    <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#CustomRange">Custom</a></li>
+        <li><a data-toggle="tab" href="#RelativeRange">Relative</a></li>
+    </ul>
+    <div class="tab-content">
+        <!-- Exchange money -->
+        <div id="CustomRange" class="tab-pane fade in active">
+            <div class="row">
+                <div class="col-sm-6 p-20">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="from-currency">Account</label>
+                            <select class="form-control" id="from-currency" v-model="relativeReport.accountNumber">
+                                <option v-for="accountNum in accountNumbers" :value="accountNum">{{accountNum}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="from-currency">Time Period</label>
+                            <select class="form-control" id="from-currency" v-model="relativeReport.reportType">
+                                <option v-for="reportType in relativeReports" :value="reportType.Value">{{reportType.Text}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" v-on:click="downloadRelativeReport" class="btn btn-success active">Download Report</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-sm-6 p-20">
+                </div>
+            </div>
+        </div>
+        <!--End:: Exchange money -->
+        <!-- InterBankTransfer -->
+        <div id="RelativeRange" class="tab-pane fade">
+            <div class="row">
+                <div class="col-sm-6 p-20">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="from-currency">Account</label>
+                            <select class="form-control" id="from-currency" v-model="customReport.accountNumber">
+                                <option v-for="accountNum in accountNumbers" v-bind:value="accountNum">{{accountNum}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="amount">Start:</label>
+                            <input type="text" class="form-control dt-picker" id="startDate" placeholder="Enter Amount" name="amount">
+                        </div>
+                        <div class="form-group">
+                            <label for="amount">End:</label>
+                            <input type="text" class="form-control dt-picker" id="endDate" placeholder="Enter Amount" name="amount">
+                        </div>
+                        <div class="form-group">
+                            <button type="button" v-on:click="downloadCustomReport" class="btn btn-success active">Download Report</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-sm-6 p-20">
+                </div>
+            </div>
+        </div>
+        <!-- End:: InterBankTransfer -->
+    </div>
+</div>
+<input type="hidden" id="accountsUrl" value='@Url.Action("GetAccountDetails", "Account")' />
+<input type="hidden" id="printTransactionUrl" value='@Url.Action("PrintTransaction", "Account")' />
+<input type="hidden" id="userId" value="@user.Id" />
+@section scripts
+{
+    @Scripts.Render("~/Scripts/transactionreports.vue.js")
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".dt-picker").each(function () {
+                $(this).datepicker();
+                $(this).datepicker("option", "showAnim", "slideDown");
+            });
+        });
+    </script>
+}

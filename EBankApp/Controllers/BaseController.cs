@@ -45,6 +45,15 @@ namespace EBankApp.Controllers
             await appDbContext.SaveChangesAsync();
         }
 
+        public async Task CreateTransaction(Transaction transaction)
+        {
+            using (var appDbContext = new AppDbContext())
+            {
+                appDbContext.Transactions.Add(transaction);
+                await appDbContext.SaveChangesAsync();
+            }
+        }
+
         public static CurrencyCode GetCurrencyTypeEnum(string currencyCode)
         {
             if (currencyCode == CurrencyCode.GBP.ToString())
@@ -86,6 +95,14 @@ namespace EBankApp.Controllers
             // update
             AttachToContext<List<Account>>("Accounts", accounts);
             AttachToContext<User>("User", user);
+        }
+
+        public User GetCurrentUser
+        {
+            get
+            {
+                return HttpContext.Session["User"] as User ?? new User();
+            }
         }
 
         [HttpGet]

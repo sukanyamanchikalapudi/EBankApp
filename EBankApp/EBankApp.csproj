@@ -52,6 +52,9 @@
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Rotativa, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Rotativa.1.7.3\lib\net461\Rotativa.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -136,6 +139,7 @@
     <Compile Include="Attributes\NoCacheAttribute.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\DateTimeExtensions.cs" />
     <Compile Include="Controllers\EBankHelper.cs" />
     <Compile Include="Controllers\SelectListExtensionMethods.cs" />
     <Compile Include="Controllers\SelectListHelper.cs" />
@@ -179,6 +183,7 @@
     <Compile Include="Models\QuickTransferRequest.cs" />
     <Compile Include="Models\Role.cs" />
     <Compile Include="Models\Transaction.cs" />
+    <Compile Include="Models\TransactionStatmentResult.cs" />
     <Compile Include="Models\TransactionTypeEnum.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\UserActivity.cs" />
@@ -191,15 +196,21 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Images\favicon.ico" />
     <Content Include="Content\Images\success.svg" />
     <Content Include="Content\Images\undraw_authentication_re_svpt.svg" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Rotativa\help-wkhtmltoimage.txt" />
+    <Content Include="Rotativa\help-wkhtmltopdf.txt" />
+    <Content Include="Rotativa\wkhtmltoimage.exe" />
+    <Content Include="Rotativa\wkhtmltopdf.exe" />
     <Content Include="Scripts\accounts.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="App_Browsers\qt.browser" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\dashboard.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
@@ -213,6 +224,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\managefunds.vue.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\transactionreports.vue.js" />
     <Content Include="Scripts\users.js" />
     <Content Include="Scripts\utilities.js" />
     <Content Include="Web.config" />
@@ -238,6 +250,9 @@
     <Content Include="Views\Account\_QuickTransfer.cshtml" />
     <Content Include="Views\Account\Create.cshtml" />
     <Content Include="Views\Base\Success.cshtml" />
+    <Content Include="Views\Account\GetTransactions.cshtml" />
+    <Content Include="Views\Account\DownloadTransactionReport.cshtml" />
+    <Content Include="Views\Account\TransactionStatment.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

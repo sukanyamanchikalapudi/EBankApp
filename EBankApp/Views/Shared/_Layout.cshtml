@@ -9,13 +9,15 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title>@ViewBag.Title - EBank</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    <link rel="icon" type="image/x-icon" href="~/Content/Images/favicon.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=IBM+Plex+Sans+Arabic:wght@300&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/ef19713432.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
 </head>
 <body style=" background-color: #f0eeee;">
     <div class="ebank-navbar">
@@ -40,7 +42,7 @@
         <div>
             @if (isAuthenticated)
             {
-                <div class="sidebar">
+                <div class="sidebar" style="max-height:95vh; overflow-y:auto;">
                     <header style="display:flex;flex-direction:column;">
                         Hello! @user.FirstName
                     </header>
@@ -68,8 +70,11 @@
                     <a href="@Url.Action("ManageFunds","Account")">
                         <i class="fas fa-pound-sign"></i>  <span>MANAGE FUNDS</span>
                     </a>
-                    <a href="@Url.Action("Success","Base")">
-                        <i class="fas fa-pound-sign"></i>  <span>Success </span>
+                    <a href="@Url.Action("GetTransactions","Account")">
+                        <i class="fas fa-list-ul"></i>  <span>TRANSACTIONS</span>
+                    </a>
+                    <a href="@Url.Action("DownloadTransactionReport","Account")">
+                        <i class="fas fa-download"></i>  <span>TRANSACTION REPORT</span>
                     </a>
                 </div>
 
@@ -99,15 +104,17 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.2/moment.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
     @RenderSection("scripts", required: false)
     <script>
-                                                                                                                                //$(document)
-                                                                                                                                //    .ajaxStart(function () {
-                                                                                                                                //        $('#AjaxLoader').show();
-                                                                                                                                //    })
-                                                                                                                                //    .ajaxStop(function () {
-                                                                                                                                //        $('#AjaxLoader').hide();
-                                                                                                                                //    });
+                                                                            //$(document)
+                                                                            //    .ajaxStart(function () {
+                                                                            //        $('#AjaxLoader').show();
+                                                                            //    })
+                                                                            //    .ajaxStop(function () {
+                                                                            //        $('#AjaxLoader').hide();
+                                                                            //    });
     </script>
 </body>
 </html>

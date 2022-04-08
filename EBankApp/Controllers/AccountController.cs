@@ -2,9 +2,11 @@
 using EBankApp.DatabaseContext;
 using EBankApp.Models;
 using Newtonsoft.Json;
+using Rotativa;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Core.Objects;
 using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Linq.Dynamic;
@@ -54,6 +56,48 @@ namespace EBankApp.Controllers
             using (appDbContext)
             {
                 accounts = await appDbContext.Accounts.Where(x => x.UserId == id).ToListAsync();
+                int totalrows = accounts.ToList().Count;
+                if (!string.IsNullOrEmpty(searchValue))//filter
+                {
+                    accounts = accounts.Where(x => x.AccountNumber.ToLower().Contains(searchValue.ToLower())).ToList();
+                }
+                int totalrowsafterfiltering = accounts.ToList().Count;
+
+                try
+                {
+                    accounts = accounts.OrderBy<Account>(sortColumnName + " " + sortDirection).ToList();
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+
+                //paging
+                accounts = accounts.Skip(start).Take(length).ToList<Account>();
+
+                return Json(new { data = accounts, draw = Request["draw"], recordsTotal = totalrows, recordsFiltered = totalrowsafterfiltering }, JsonRequestBehavior.AllowGet);
+
+            }
+        }
+
+        [HttpGet]
+        [EBankAuthorized]
+        public async Task<ActionResult> GetAllAccounts(string userId)
+        {
+            await LogActivity(UserActivityEnum.MY_ACCOUNTS);
+
+            var id = Convert.ToInt32(userId);
+            int start = Convert.ToInt32(HttpContext.Request["start"] ?? "1");
+            int length = Convert.ToInt32(HttpContext.Request["length"] ?? "10");
+            string searchValue = HttpContext.Request["search[value]"];
+            string sortColumnName = HttpContext.Request["columns[" + Request["order[0][column]"] + "][name]"] ?? "AccountNumber";
+            string sortDirection = HttpContext.Request["order[0][dir]"] ?? "asc";
+
+            List<Account> accounts;
+
+            using (appDbContext)
+            {
+                accounts = await appDbContext.Accounts.ToListAsync();
                 int totalrows = accounts.ToList().Count;
                 if (!string.IsNullOrEmpty(searchValue))//filter
                 {
@@ -128,7 +172,7 @@ namespace EBankApp.Controllers
                 res = await appDbContext.SaveChangesAsync();
                 if (res > 0)
                 {
-                    return RedirectToAction("Edit", "User", new { userId = userId });
+                    return RedirectToAction("MyAccounts", "Account", new { userId = userId });
                 }
             }
 
@@ -146,9 +190,34 @@ namespace EBankApp.Controllers
             {
                 if (payer.AccountBalance > transferRequest.Amount)
                 {
-                    payer.AccountBalance -= payer.AccountBalance - transferRequest.Amount;
-                    payee.AccountBalance += payee.AccountBalance + transferRequest.Amount;
+                    payer.AccountBalance -= transferRequest.Amount;
+                    payee.AccountBalance += transferRequest.Amount;
                     await appDbContext.SaveChangesAsync();
+
+                    // Create transaction for payer
+                    await CreateTransaction(new Transaction
+                    {
+                        FromAccount = transferRequest.PayerAccountNumber,
+                        ToAccount = transferRequest.PayeeAccountNumber,
+                        TransactionType = TransactionTypeEnum.DEBITED,
+                        Debited = transferRequest.Amount,
+                        AccountId = payer.Id,
+                        CreatedOn = DateTime.UtcNow,
+                        CreatedBy = GetCurrentUser.Id
+                    });
+
+                    // Create transaction for payee
+                    await CreateTransaction(new Transaction
+                    {
+                        FromAccount = transferRequest.PayerAccountNumber,
+                        ToAccount = transferRequest.PayeeAccountNumber,
+                        TransactionType = TransactionTypeEnum.CREDITED,
+                        Credited = transferRequest.Amount,
+                        AccountId = payee.Id,
+                        CreatedOn = DateTime.UtcNow,
+                        CreatedBy = GetCurrentUser.Id
+                    });
+
                     return View("ManageFunds");
                 }
                 else
@@ -193,6 +262,56 @@ namespace EBankApp.Controllers
         }
 
         [HttpGet]
+        [EBankAuthorized]
+        public ActionResult GetTransactions()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        [EBankAuthorized]
+        public async Task<ActionResult> GetAllTransactions()
+        {
+            await LogActivity(UserActivityEnum.MY_ACCOUNTS);
+
+            int start = Convert.ToInt32(HttpContext.Request["start"] ?? "1");
+            int length = Convert.ToInt32(HttpContext.Request["length"] ?? "10");
+            string searchValue = HttpContext.Request["search[value]"];
+            string sortColumnName = HttpContext.Request["columns[" + Request["order[0][column]"] + "][name]"] ?? "FromAccount";
+            string sortDirection = HttpContext.Request["order[0][dir]"] ?? "asc";
+
+            List<Transaction> transactions;
+
+            using (appDbContext)
+            {
+                transactions = await appDbContext.Transactions.ToListAsync();
+                transactions.ForEach(x => x.CreatedOn.Value.ToUniversalTime());
+                int totalrows = transactions.ToList().Count;
+                if (!string.IsNullOrEmpty(searchValue))//filter
+                {
+                    transactions = transactions.Where(x => x.ToAccount.ToLower().Contains(searchValue.ToLower())).ToList();
+                }
+                int totalrowsafterfiltering = transactions.ToList().Count;
+
+                try
+                {
+                    if (!string.IsNullOrEmpty(sortColumnName) && !string.IsNullOrEmpty(sortDirection))
+                        transactions = transactions.OrderBy<Transaction>(sortColumnName + " " + sortDirection).ToList();
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+
+                //paging
+                transactions = transactions.Skip(start).Take(length).ToList<Transaction>();
+
+                return Json(new { data = transactions, draw = Request["draw"], recordsTotal = totalrows, recordsFiltered = totalrowsafterfiltering }, JsonRequestBehavior.AllowGet);
+
+            }
+        }
+
+        [HttpGet]
         public async Task<ActionResult> GetCurrencies()
         {
             using (var client = new HttpClient())
@@ -209,6 +328,74 @@ namespace EBankApp.Controllers
                 }
             }
             return Json("Error");
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> PrintTransaction(PrintTransactionRequest request)
+        {
+            if (string.IsNullOrEmpty(request.Start) && string.IsNullOrEmpty(request.End) && !string.IsNullOrEmpty(request.ReportType))
+            {
+                using (appDbContext)
+                {
+                    int reportType = int.Parse(request.ReportType);
+                    DateTime period;
+
+                    period = (reportType == (int)TransactionReportTime.THIS_WEEK) ? DateTime.Now.StartOfWeek(DayOfWeek.Monday) : new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+
+                    var transactions = await appDbContext.Transactions.Where(x => (x.CreatedOn > period) && (x.FromAccount == request.AccountNumber)).ToListAsync();
+
+                    var result = new TransactionStatementResult
+                    {
+                        AccountNumber = request.AccountNumber,
+                        Transactions = transactions,
+                        Date = DateTime.UtcNow
+                    };
+
+                    HttpContext.Session["TransactionStatements"] = result;
+
+                    return Json(new { RedirectUrl = Url.Action("TransactionStatment", "Account") });
+                }
+            }
+            else if (!string.IsNullOrEmpty(request.Start) && !string.IsNullOrEmpty(request.End) && string.IsNullOrEmpty(request.ReportType))
+            {
+                using (appDbContext)
+                {
+                    var start = DateTime.Parse(request.Start);
+                    var end = DateTime.Parse(request.End);
+
+                    try
+                    {
+                        var transactions = await appDbContext.Transactions.Where(x => x.CreatedOn >= start && x.CreatedOn <= end && (x.FromAccount == request.AccountNumber)).ToListAsync();
+                        var result = new TransactionStatementResult
+                        {
+                            AccountNumber = request.AccountNumber,
+                            Transactions = transactions,
+                            Date = DateTime.UtcNow
+                        };
+
+                        HttpContext.Session["TransactionStatements"] = result;
+                    }
+                    catch (Exception e)
+                    {
+
+                        throw;
+                    }
+                    return Json(new { RedirectUrl = Url.Action("TransactionStatment", "Account") });
+                }
+            }
+            return Json(new { RedirectUrl = Url.Action("Error") });
+        }
+
+
+        public async Task<ActionResult> TransactionStatment()
+        {
+            return new ViewAsPdf();
+        }
+
+        [HttpGet]
+        public ActionResult DownloadTransactionReport()
+        {
+            return View();
         }
 
         [HttpPost]
@@ -311,6 +498,29 @@ namespace EBankApp.Controllers
                         var res = await appDbContext.SaveChangesAsync();
                         if (res > 0)
                         {
+                            // Create transaction for payer
+                            await CreateTransaction(new Transaction
+                            {
+                                FromAccount = transfer.Source,
+                                ToAccount = transfer.Destination,
+                                TransactionType = TransactionTypeEnum.DEBITED,
+                                Debited = Convert.ToInt32(transfer.Amount),
+                                AccountId = sourceAccount.Id,
+                                CreatedOn = DateTime.UtcNow,
+                                CreatedBy = GetCurrentUser.Id
+                            });
+
+                            // Create transaction for payee
+                            await CreateTransaction(new Transaction
+                            {
+                                FromAccount = transfer.Source,
+                                ToAccount = transfer.Destination,
+                                TransactionType = TransactionTypeEnum.CREDITED,
+                                Debited = Convert.ToInt32(transfer.Amount),
+                                AccountId = destinationAccount.Id,
+                                CreatedOn = DateTime.UtcNow,
+                                CreatedBy = GetCurrentUser.Id
+                            });
                             return Json(new { RedirectUrl = Url.Action("Success", "Base") });
                         }
                         else
@@ -354,6 +564,22 @@ namespace EBankApp.Controllers
             public int UserId { get; set; }
             public string AccountNumber { get; set; }
             public int Currency { get; set; }
+        }
+
+        public class PrintTransactionRequest
+        {
+            public string Start { get; set; }
+            public string End { get; set; }
+            public string ReportType { get; set; }
+            public string AccountNumber { get; set; }
+            public int UserId { get; set; }
+        }
+
+        public enum TransactionReportTime
+        {
+            THIS_WEEK,
+            THIS_MONTH,
+            CUSTOM
         }
     }
 }

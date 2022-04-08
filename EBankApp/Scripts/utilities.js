@@ -18,9 +18,21 @@
         return table.ajax.reload(null, true);
     }
 
+    function getAccountTypeText(accountType) {
+        switch (parseInt(accountType)) {
+            case 1:
+                return "CURRENT"
+            case 2:
+                return "SAVINGS"
+            default:
+                return "-"
+        }
+    }
+
     return {
         formatCurrency: formatStringAsCurrency,
         refreshTableWithoutPagingReset: reloadDataTableWithoutPagingReset,
-        refreshTableWithPagingReset: reloadDataTableWithPagingReset
+        refreshTableWithPagingReset: reloadDataTableWithPagingReset,
+        getAccountType: getAccountTypeText
     }
 })();

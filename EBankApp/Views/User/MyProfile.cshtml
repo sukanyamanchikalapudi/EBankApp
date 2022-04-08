@@ -4,7 +4,7 @@
 
 
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "My Profile";
     var accounts = HttpContext.Current.Session["Accounts"] as List<Account>;
 }
 
@@ -80,10 +80,4 @@
     <div class="col-sm-6 col-lg-6">
 
     </div>
-</div>
-
-
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
 </div>

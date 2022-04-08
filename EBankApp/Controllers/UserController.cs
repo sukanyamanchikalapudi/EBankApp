@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Linq.Dynamic;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -197,6 +198,48 @@ namespace EBankApp.Controllers
 
         [HttpGet]
         [EBankAuthorized]
+        public async Task<ActionResult> GetUsers()
+        {
+            await LogActivity(UserActivityEnum.MY_ACCOUNTS);
+
+            int start = Convert.ToInt32(HttpContext.Request["start"] ?? "1");
+            int length = Convert.ToInt32(HttpContext.Request["length"] ?? "10");
+            string searchValue = HttpContext.Request["search[value]"];
+            string sortColumnName = HttpContext.Request["columns[" + Request["order[0][column]"] + "][name]"] ?? "FirstName";
+            string sortDirection = HttpContext.Request["order[0][dir]"] ?? "asc";
+
+            List<User> users;
+
+            using (appDbContext)
+            {
+                users = await appDbContext.Users.AsNoTracking().ToListAsync();
+                int totalrows = users.ToList().Count;
+                if (!string.IsNullOrEmpty(searchValue))//filter
+                {
+                    users = users.Where(x => x.FirstName.ToLower().Contains(searchValue.ToLower())).ToList();
+                }
+                int totalrowsafterfiltering = users.ToList().Count;
+
+                try
+                {
+                    if (!string.IsNullOrEmpty(sortColumnName) && !string.IsNullOrEmpty(sortDirection))
+                        users = users.OrderBy<User>(sortColumnName + " " + sortDirection).ToList();
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+
+                //paging
+                users = users.Skip(start).Take(length).ToList<User>();
+
+                return Json(new { data = users, draw = Request["draw"], recordsTotal = totalrows, recordsFiltered = totalrowsafterfiltering }, JsonRequestBehavior.AllowGet);
+
+            }
+        }
+
+        [HttpGet]
+        [EBankAuthorized]
         public async Task<ActionResult> MyAccounts(string userId)
         {
             await LogActivity(UserActivityEnum.MY_ACCOUNTS);
@@ -218,13 +261,23 @@ namespace EBankApp.Controllers
         }
 
         #region JS Methods
-        [HttpGet]
-        public async Task<JsonResult> GetUsers()
+
+        [HttpPost]
+        public async Task<ActionResult> DeleteUser(int userId)
         {
-            var list = await appDbContext.Users.ToListAsync();
-            var json = JsonConvert.SerializeObject(list);
-            return Json(json, JsonRequestBehavior.AllowGet);
+            using (appDbContext)
+            {
+                var user = await appDbContext.Users.Where(x => x.Id == userId).FirstOrDefaultAsync();
+                appDbContext.Users.Remove(user);
+                var result = await appDbContext.SaveChangesAsync();
+                if (result > 0)
+                {
+                    return Json(new { Status = "success" });
+                }
+            }
+            throw new Exception();
         }
+
         #endregion
 
         #region Private Methods

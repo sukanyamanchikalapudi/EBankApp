@@ -1,0 +1,67 @@
+﻿@using EBankApp.Models
+@using System.Web
+@model EBankApp.Models.Transaction
+@{
+    Layout = null;
+    ViewBag.Title = "Transaction Statement";
+    var data = HttpContext.Current.Session["TransactionStatements"] as TransactionStatementResult;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Transaction Statment</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h2>Transaction Statment</h2>
+        <div class="well well-sm">Account Number: @data.AccountNumber &nbsp;&nbsp; @data.Date</div>
+        <table class="table table-bordered">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.FromAccount)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ToAccount)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Credited)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Debited)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CreatedOn)
+                </th>
+            </tr>
+
+            @foreach (var item in data.Transactions)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FromAccount)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ToAccount)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Credited)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Debited)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CreatedOn)
+                    </td>
+                </tr>
+            }
+
+        </table>
+    </div>
+</body>
+</html>

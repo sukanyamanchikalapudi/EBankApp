@@ -399,3 +399,9 @@ textarea {
         width: 200px;
         height: 200px;
     }
+
+
+.sidebar a span {
+    font-size: 1.2rem;
+    font-weight: bolder;
+}

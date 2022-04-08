@@ -2,7 +2,7 @@
 @using System.Web;
 
 @{
-    ViewBag.Title = "ManageFunds";
+    ViewBag.Title = "Manage Funds";
     var user = HttpContext.Current.Session["User"] as User;
 }
 
@@ -103,7 +103,6 @@
 <input type="hidden" id="accountsUrl" value='@Url.Action("GetAccountDetails", "Account")' />
 <input type="hidden" id="exchangeCurrencyUrl" value='@Url.Action("ExchangeCurrency", "Account")' />
 <input type="hidden" id="interBankTransferMoneyUrl" value='@Url.Action("InterBankTransfer", "Account")' />
-
 <input type="hidden" id="userId" value="@user.Id" />
 @section scripts
 {

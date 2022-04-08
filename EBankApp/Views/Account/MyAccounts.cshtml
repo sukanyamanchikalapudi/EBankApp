@@ -1,7 +1,7 @@
 ﻿@using EBankApp.Models;
 
 @{
-    ViewBag.Title = "MyAccounts";
+    ViewBag.Title = "My Accounts";
     var user = HttpContext.Current.Session["User"] as User;
 }
 
@@ -59,15 +59,21 @@
                             return '<span class="delete-account" data-account-userid="' + data.UserId + '" data-account-currrency="' + data.Currency + '" data-acount-num=' + data.AccountNumber + ' href="javascript:void(0)"><i class="fas fa-trash"></i></span>';
                         },
                         "targets": 5
+                    },
+                    {
+                        "render": function (data, type, row) {
+                            return '<span>' + utilitiesApp.getAccountType(data) + '</span>';
+                        },
+                        "targets": 2
                     }
                 ],
                 "columns": [
                     { "data": "AccountNumber", "name": "AccountNumber" },
                     { "data": null, "name": "AccountBalance" },
                     { "data": "AccountType", "name": "AccountType" },
-                    { "data": "Currency", "name": "Currency" },
-                    { "data": "UserId", "name": "UserId" },
-                    { "data": null, "name": "" }
+                    { "data": "Currency", "name": "Currency", "visible": false },
+                    { "data": "UserId", "name": "UserId", "visible": false },
+                    { "data": null, "name": "", "sortable": false, "visible": false }
                 ],
                 "pageLength": 10,
                 "lengthMenu": [1, 5, 10, 15, 20, 30],

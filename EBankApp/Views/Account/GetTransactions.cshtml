@@ -1,0 +1,97 @@
+﻿@using EBankApp.Models;
+@using System.Web;
+
+@{
+    ViewBag.Title = "View Transactions";
+    var user = HttpContext.Current.Session["User"] as User;
+}
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap.min.css" />
+
+<div class="p-20">
+    <h2>Manage Transactions</h2>
+
+    <table id="transactionsDataTable" class="table table-striped table-bordered" style="width:100%">
+        <thead>
+            <tr>
+                <th>FromAccount</th>
+                <th>ToAccount</th>
+                <th>Credited</th>
+                <th>Debited</th>
+                <th>Date</th>
+                <th></th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+<input type="hidden" id="getAllTransactionsUrl" value="@Url.Action("GetAllTransactions", "Account")" />
+<input type="hidden" id="userId" value="@user.Id" />
+<input type="hidden" id="deleteUserUrl" value="@Url.Action("DeleteUser", "User")" />
+
+@Scripts.Render("~/bundles/utilities")
+
+@section scripts
+{
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            let url = $("#getAllTransactionsUrl").val();
+            let usersTable = $("#transactionsDataTable").DataTable({
+                "ajax": {
+                    "url": url,
+                    "type": "GET",
+                    "datatype": "json"
+                },
+                "columnDefs": [
+                    {
+                        "render": function (data, type, row) {
+                            return '<b>' + data.FromAccount + '</b>';
+                        },
+                        "targets": 0
+                    },
+                    {
+                        "render": function (data, type, row) {
+                            return '<span class="delete-user" data-userid="' + data.Id + '"  href="javascript:void(0)"><i class="fas fa-trash"></i></span>';
+                        },
+                        "targets": 5
+                    },
+                    {
+                        "render": function (data, type, row) {
+                            return moment(data.CreatedOn).format('DD-MM-YYYY HH:mm');
+                        },
+                        "targets": 4
+                    }
+                ],
+                "columns": [
+                    { "data": null, "name": "FromAccount" },
+                    { "data": "ToAccount", "name": "ToAccount" },
+                    { "data": "Credited", "name": "Credited" },
+                    { "data": "Debited", "name": "Debited" },
+                    { "data": null, "name": "CreatedOn" },
+                    { "data": null, "name": "" }
+                ],
+                "pageLength": 10,
+                "lengthMenu": [1, 5, 10, 15, 20, 30],
+                "serverSide": true,
+                "scrollX": true
+            });
+
+            $("#usersDataTable").on('click', '.delete-user', function () {
+                let userId = $(this).attr("data-userid");
+                let url = $("#deleteUserUrl").val() + "?userId=" + parseInt(userId);
+                $.post(url).done(function (resp) {
+                    if (resp.Status = "success") {
+                        utilitiesApp.refreshTableWithoutPagingReset(usersTable);
+                    }
+                }).fail(function () {
+
+                }).always(function () {
+
+                });
+            });
+        });
+    </script>
+}
+
