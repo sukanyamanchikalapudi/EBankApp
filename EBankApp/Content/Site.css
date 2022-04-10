@@ -1,5 +1,5 @@
 ﻿.ebank-navbar {
-    position: absolute;
+    position: sticky;
     top: 0;
     background-color: white;
     width: -webkit-fill-available;
@@ -7,6 +7,9 @@
     display: flex;
     justify-content: space-between;
     box-shadow: 0px 0px 4px 1px;
+    top:0;
+    z-index:1;
+
 }
 
     .ebank-navbar .navigation-links ul {
@@ -200,7 +203,7 @@ body {
 .page-body-content {
     background-color: #ffffff;
     margin-left: 250px;
-    margin-top: 100px;
+    margin-top: 43px;
     box-shadow: 0px 0px 0px 0px;
     padding: 12px;
     border-radius: 8px;
@@ -404,4 +407,12 @@ textarea {
 .sidebar a span {
     font-size: 1.2rem;
     font-weight: bolder;
+}
+
+.p-900 {
+    font-weight:900;
+}
+
+.error {
+    color: red;
 }

@@ -1,26 +1,27 @@
-﻿@model EBankApp.Models.User
+﻿@model EBankApp.Models.UpdateProfileRequest
 @using EBankApp.Models
 @using System.Globalization;
 
 
 @{
     ViewBag.Title = "My Profile";
-    var accounts = HttpContext.Current.Session["Accounts"] as List<Account>;
-    var user = HttpContext.Current.Session["User"] as User;
+    var accounts = HttpContext.Current.Session[ApplicationKeys.SessionKeys.Accounts] as List<Account>;
+    var user = HttpContext.Current.Session[ApplicationKeys.SessionKeys.User] as User;
 }
 
-<h2>My Profile</h2>
+
+<h2>Profile</h2>
+@Html.ValidationSummary(false, "", new { @class = "text-danger" })
 
 <div class="row">
-    <div class="col-sm-6 col-lg-6">
+    <div class="col">
+
         @using (Html.BeginForm())
         {
             @Html.AntiForgeryToken()
 
+            <hr />
             <div class="form-horizontal">
-                <hr />
-                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                @Html.HiddenFor(model => model.Id)
 
                 <div class="form-group">
                     @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -57,7 +58,7 @@
                 <div class="form-group">
                     @Html.LabelFor(model => model.PIN, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
-                        @Html.EditorFor(model => model.PIN, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.EditorFor(model => model.PIN, new { htmlAttributes = new { @class = "form-control", type = "password" } })
                         @Html.ValidationMessageFor(model => model.PIN, "", new { @class = "text-danger" })
                     </div>
                 </div>
@@ -67,7 +68,7 @@
                     <div class="form-group">
                         @Html.LabelFor(model => model.RoleId, htmlAttributes: new { @class = "control-label col-md-2" })
                         <div class="col-md-10">
-                            @Html.EditorFor(model => model.RoleId, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.EditorFor(model => model.RoleId, new { htmlAttributes = new { @class = "form-control", min = "1", max = "2" } })
                             @Html.ValidationMessageFor(model => model.RoleId, "", new { @class = "text-danger" })
                         </div>
                     </div>
@@ -81,7 +82,39 @@
             </div>
         }
     </div>
-    <div class="col-sm-6 col-lg-6">
-
+    <div class="col">
+        <div class="container">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Account number</th>
+                        <th>Account Type</th>
+                        <th>Available Balance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var account in accounts)
+                    {
+                        <tr>
+                            <td>@account.AccountNumber</td>
+                            <td>@account.AccountType</td>
+                            @if (account.Currency == (int)CurrencyCode.GBP)
+                            {
+                                <td class="p-900">
+                                    @((account.AccountBalance).ToString("C", new CultureInfo("en-GB", false).NumberFormat))
+                                </td>
+                            }
+                            else if (account.Currency == (int)CurrencyCode.USD)
+                            {
+                                <td class="p-900">@((account.AccountBalance).ToString("C", new CultureInfo("en-US", false).NumberFormat))</td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,5 +1,9 @@
-﻿using EBankApp.Attributes;
+﻿using AutoMapper;
+using EBankApp.Attributes;
+using EBankApp.Controllers.Models;
 using EBankApp.DatabaseContext;
+using EBankApp.ExtensionMethods;
+using EBankApp.Helpers;
 using EBankApp.Models;
 using Newtonsoft.Json;
 using Rotativa;
@@ -21,7 +25,8 @@ namespace EBankApp.Controllers
     [EBankAuthorized]
     public partial class AccountController : BaseController
     {
-        public AccountController()
+
+        public AccountController(IMapper mapper) : base(mapper)
         {
         }
         // GET: Account
@@ -40,44 +45,46 @@ namespace EBankApp.Controllers
 
         [HttpGet]
         [EBankAuthorized]
-        public async Task<ActionResult> GetMyAccounts(string userId)
+        public async Task<ActionResult> GetMyAccounts(int userId)
         {
             await LogActivity(UserActivityEnum.MY_ACCOUNTS);
 
-            var id = Convert.ToInt32(userId);
-            int start = Convert.ToInt32(HttpContext.Request["start"] ?? "1");
-            int length = Convert.ToInt32(HttpContext.Request["length"] ?? "10");
-            string searchValue = HttpContext.Request["search[value]"];
-            string sortColumnName = HttpContext.Request["columns[" + Request["order[0][column]"] + "][name]"] ?? "AccountNumber";
-            string sortDirection = HttpContext.Request["order[0][dir]"] ?? "asc";
+            int totalRows = 0;
+            int filteredRecords = 0;
 
-            List<Account> accounts;
-
-            using (appDbContext)
+            if (userId > 0)
             {
-                accounts = await appDbContext.Accounts.Where(x => x.UserId == id).ToListAsync();
-                int totalrows = accounts.ToList().Count;
-                if (!string.IsNullOrEmpty(searchValue))//filter
+                var options = DataTableOptions();
+                List<Account> accounts = new List<Account>();
+
+                using (appDbContext)
                 {
-                    accounts = accounts.Where(x => x.AccountNumber.ToLower().Contains(searchValue.ToLower())).ToList();
+                    var user = await appDbContext.Users.FindAsync(userId);
+
+                    if (user == null)
+                    {
+                        return Json(new { Error = "Invalid userId" });
+                    }
+
+                    accounts = await appDbContext.Accounts.Where(x => x.UserId == user.Id).AsNoTracking().ToListAsync();
+
+                    totalRows = accounts.Count;
+
+                    if (!string.IsNullOrEmpty(options.SearchKey))
+                        accounts = accounts.Where(x => x.AccountNumber.ToLower().Contains(options.SearchKey)).ToList();
+
+                    filteredRecords = accounts.Count;
+
+                    if (!string.IsNullOrEmpty(options.SortColumn) && !string.IsNullOrEmpty(options.SortBy))
+                        accounts = accounts.OrderBy<Account>(options.SortColumn + " " + options.SortBy).ToList();
+
+                    if (options.PageNumber.HasValue && options.PageSize.HasValue)
+                        accounts = accounts.Skip(options.PageNumber.Value).Take(options.PageSize.Value).ToList();
+
+                    return Json(new { data = accounts, draw = Request["draw"], recordsTotal = totalRows, recordsFiltered = filteredRecords }, JsonRequestBehavior.AllowGet);
                 }
-                int totalrowsafterfiltering = accounts.ToList().Count;
-
-                try
-                {
-                    accounts = accounts.OrderBy<Account>(sortColumnName + " " + sortDirection).ToList();
-                }
-                catch (Exception ex)
-                {
-                    throw;
-                }
-
-                //paging
-                accounts = accounts.Skip(start).Take(length).ToList<Account>();
-
-                return Json(new { data = accounts, draw = Request["draw"], recordsTotal = totalrows, recordsFiltered = totalrowsafterfiltering }, JsonRequestBehavior.AllowGet);
-
             }
+            return Json(new { Error = "Invalid userId" });
         }
 
         [HttpGet]
@@ -327,7 +334,7 @@ namespace EBankApp.Controllers
         {
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri("https://localhost:44324/");
+                client.BaseAddress = new Uri(CurrenyExchangeAPIUrl);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
@@ -416,7 +423,7 @@ namespace EBankApp.Controllers
             {
                 using (var client = new HttpClient())
                 {
-                    client.BaseAddress = new Uri("https://localhost:44324/");
+                    client.BaseAddress = new Uri(CurrenyExchangeAPIUrl);
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
@@ -474,10 +481,14 @@ namespace EBankApp.Controllers
                         else
                         {
                             ModelState.AddModelError("InsufficientAmount", "You do not have enough funds.");
-                            return View(exchangeCurrencyRequest);
+                            return Json(new { RedirectUrl = "", ErrorMessages = GetModelErrors(ModelState) });
                         }
                     }
                 }
+            } 
+            else
+            {
+                return Json(new { RedirectUrl = "", ErrorMessages = GetModelErrors(ModelState) });
             }
 
             return View(exchangeCurrencyRequest);
@@ -563,33 +574,6 @@ namespace EBankApp.Controllers
                 }
             }
             throw new Exception();
-        }
-
-        public class ExchangeValue
-        {
-            public string Value { get; set; }
-        }
-
-        public class DeleteAccountRequest
-        {
-            public int UserId { get; set; }
-            public string AccountNumber { get; set; }
-            public int Currency { get; set; }
-        }
-
-        public class PrintTransactionRequest
-        {
-            public string Start { get; set; }
-            public string End { get; set; }
-            public string ReportType { get; set; }
-            public string AccountNumber { get; set; }
-            public int UserId { get; set; }
-        }
-        public enum TransactionReportTime
-        {
-            THIS_WEEK,
-            THIS_MONTH,
-            CUSTOM
         }
     }
 }

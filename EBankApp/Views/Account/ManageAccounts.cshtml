@@ -1,8 +1,7 @@
 ﻿@using EBankApp.Models;
-
 @{
     ViewBag.Title = "Manage Accounts";
-    var user = HttpContext.Current.Session["User"] as User;
+    var user = HttpContext.Current.Session[ApplicationKeys.SessionKeys.User] as User;
 }
 
 <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap.min.css" />

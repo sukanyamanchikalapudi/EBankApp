@@ -1,43 +1,46 @@
 ﻿@using EBankApp.Models;
 @using System.Web;
 @model EBankApp.Models.User
-@using EBankApp.Controllers
 @using System.Globalization;
 @{
     ViewBag.Title = "Dashboard";
-    var user = HttpContext.Current.Session["User"] as User;
+    var user = HttpContext.Current.Session[ApplicationKeys.SessionKeys.User] as User;
 
-    var accounts = HttpContext.Current.Session["Accounts"] as List<Account>;
+    var accounts = HttpContext.Current.Session[ApplicationKeys.SessionKeys.Accounts] as List<Account>;
 }
 
-<div class="row">
-    <div class="col-sm-6">
-        @if (accounts.Any())
-        {
-            foreach (var account in accounts)
+
+<div class="container">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Account number</th>
+                <th>Account Type</th>
+                <th>Available Balance</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var account in accounts)
             {
-                <div class="account-details-card">
-                    <div class="account-div">
-                        <p>Account number</p>
-                        <p class="highlight-detail">@account.AccountNumber</p>
-                        <p>Account Type</p>
-                        <p class="highlight-detail">@account.AccountType</p>
-                        <p>Available Balance</p>
-                        @if (account.Currency == (int)CurrencyCode.GBP)
-                        {
-                            <p class="highlight-detail">@((account.AccountBalance).ToString("C", new CultureInfo("en-GB", false).NumberFormat))</p>
-                        }
-                        else if (account.Currency == (int)CurrencyCode.USD)
-                        {
-                            <p class="highlight-detail">@((account.AccountBalance).ToString("C", new CultureInfo("en-US", false).NumberFormat))</p>
-                        }
-                    </div>
-                </div>
+                <tr>
+                    <td>@account.AccountNumber</td>
+                    <td>@account.AccountType</td>
+                    @if (account.Currency == (int)CurrencyCode.GBP)
+                    {
+                        <td class="p-900">
+                            @((account.AccountBalance).ToString("C", new CultureInfo("en-GB", false).NumberFormat))
+                        </td>
+                    }
+                    else if (account.Currency == (int)CurrencyCode.USD)
+                    {
+                        <td class="p-900">@((account.AccountBalance).ToString("C", new CultureInfo("en-US", false).NumberFormat))</td>
+                    }
+                </tr>
             }
-        }
-    </div>
-    <div class="col-sm-6"></div>
+        </tbody>
+    </table>
 </div>
+
 
 @section scripts {
 }

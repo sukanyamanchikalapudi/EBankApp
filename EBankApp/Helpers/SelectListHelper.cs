@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Web.Mvc;
 
-namespace EBankApp.Controllers
+namespace EBankApp.Helpers
 {
     public static class SelectListHelper
     {

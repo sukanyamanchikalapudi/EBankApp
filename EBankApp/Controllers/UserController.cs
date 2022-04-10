@@ -1,24 +1,28 @@
-﻿using EBankApp.Attributes;
+﻿using AutoMapper;
+using EBankApp.Attributes;
+using EBankApp.Helpers;
 using EBankApp.Models;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Dynamic;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 
 namespace EBankApp.Controllers
 {
     public class UserController : BaseController
     {
-
-        public UserController() : base()
+        public UserController(IMapper mapper) : base(mapper)
         {
         }
 
+        /// <summary>
+        ///  GET ACTION
+        ///  APP_LOGIN_VIEW
+        /// </summary>
+        /// <returns>View</returns>
         [HttpGet]
         [NoCache]
         public async Task<ActionResult> Login()
@@ -26,6 +30,7 @@ namespace EBankApp.Controllers
             if (IsAlreadyLoggedIn())
             {
                 await LogActivity(UserActivityEnum.USER_LOGIN);
+                // Since the user already loggedin so redirecting to dashboard.
                 return RedirectToAction("Dashboard");
             }
             return View();
@@ -38,11 +43,9 @@ namespace EBankApp.Controllers
             await LogActivity(UserActivityEnum.USER_LOGOUT);
             if (IsAlreadyLoggedIn())
             {
-                HttpContext.Session.Remove("User");
-                Session.Abandon();
+                CancelCurrentSession();
                 return RedirectToActionPermanent("Login");
             }
-
             return View("Error");
         }
 
@@ -52,36 +55,81 @@ namespace EBankApp.Controllers
         {
             if (IsAlreadyLoggedIn())
             {
+                // Since the user is already loggedin so redirecting to dashboard.
                 await LogActivity(UserActivityEnum.USER_REGISTER);
                 return RedirectToActionPermanent("Dashboard");
             }
             return View();
         }
 
-        // GET: Account
+        /// <summary>
+        ///  POST Action
+        ///  APP_LOGIN_REQUEST
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<ActionResult> Login(LoginRequest user)
         {
-            using (appDbContext)
+            if (ModelState.IsValid)
             {
-                var res = await appDbContext.Users.FirstOrDefaultAsync(x => (x.UserName == user.UserName && x.Password == user.Password) || x.Accounts.Any(a => a.AccountNumber == user.UserName && x.PIN == user.Password));
-                if (res != null)
+                using (appDbContext)
                 {
-                    var accounts = await appDbContext.Accounts.Where(x => x.UserId == res.Id).ToListAsync();
-                    AttachToContext<User>("User", res);
-                    AttachToContext<List<Account>>("Accounts", accounts);
-                    await LogActivity(UserActivityEnum.USER_LOGIN);
-                    return RedirectToActionPermanent("Dashboard");
+                    try
+                    {
+                        var dbUser = await appDbContext.Users
+                                                        .SingleOrDefaultAsync(x => (x.UserName.ToLower() == user.UserName.Trim().ToLower() &&
+                                                        x.Password.ToLower() == user.Password.Trim().ToLower()) ||
+                                                        x.Accounts.Any(a => a.AccountNumber.ToLower() == user.UserName.ToLower() &&
+                                                        x.PIN.ToLower() == user.Password.ToLower()));
+
+                        if (dbUser == null)
+                        {
+                            ModelState.AddModelError("InvalidCredentails", "Invalid username or password");
+                            return View(user);
+                        }
+                        else
+                        {
+                            var accounts = await appDbContext.Accounts.Where(x => x.UserId == dbUser.Id).AsNoTracking().ToListAsync();
+
+                            // Attach to session
+                            AttachToContext<User>(ApplicationKeys.SessionKeys.User, dbUser);
+
+                            if (accounts.Any())
+                            {
+                                // Attach user account information to session
+                                AttachToContext<List<Account>>(ApplicationKeys.SessionKeys.Accounts, accounts);
+                            }
+
+                            // Log user activity
+                            await LogActivity(UserActivityEnum.USER_LOGIN);
+
+                            // Redirect to dashboard on successfull registration.
+                            return RedirectToActionPermanent("MyProfile", "User", new { userId = dbUser.Id });
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        // Since there were exception need to clear out the session
+                        CancelCurrentSession();
+                        return RedirectToAction("Error");
+                    }
                 }
             }
             return View(user);
         }
 
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<ActionResult> Register(User model)
         {
-            int dbSaveResult = 0;
-            int NumberOfTransactions = 2;
+            int actualTransactions = 0;
+            int expectedTransactions = 2;
             if (ModelState.IsValid)
             {
                 try
@@ -95,35 +143,50 @@ namespace EBankApp.Controllers
                         Password = model.Password,
                         RoleId = (int)UserRoleEnum.User
                     };
-
+                    // Register user
                     appDbContext.Users.Add(user);
 
                     var account = new Account()
                     {
-                        AccountBalance = INITIAL_ACCOUNT_BALANCCE,
+                        AccountBalance = INITIAL_ACCOUNT_BALANCE,
                         AccountNumber = EBankHelper.GenerateAccountNumber(ACCOUNT_NUMBER_LENGTH),
                         AccountType = AccountTypeEnum.SAVINGS,
                         UserId = user.Id,
                         Currency = (int)CurrencyCode.GBP
                     };
 
+                    // Create an account for the user
                     appDbContext.Accounts.Add(account);
-                    dbSaveResult = await appDbContext.SaveChangesAsync();
+
+                    // Save changes to the DB.
+                    actualTransactions = await appDbContext.SaveChangesAsync();
                 }
                 catch (Exception e)
                 {
-
-                    throw;
+                    ModelState.AddModelError("RegistrationFailed", "Failed to register the user");
+                    return View(model);
                 }
 
-                if (dbSaveResult == NumberOfTransactions)
+                if (actualTransactions == expectedTransactions)
                 {
-                    AttachToContext<User>("User", model);
-                    return RedirectToActionPermanent("Dashboard");
+                    return RedirectToAction("RegistrationSuccessfull", "User");
+                }
+                else
+                {
+                    return RedirectToAction("Error");
                 }
             }
-
             return View(model);
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public ActionResult RegistrationSuccessfull()
+        {
+            return View();
         }
 
         [HttpPost]
@@ -134,10 +197,8 @@ namespace EBankApp.Controllers
             {
                 using (appDbContext)
                 {
-                    available = await appDbContext.Users.AnyAsync(x => x.UserName == username) ? false : true;
+                    available = await appDbContext.Users.AnyAsync(x => x.UserName.ToLower() == username.ToLower()) ? false : true;
                 }
-
-                await Task.Delay(5000);
             }
             return Json(available);
         }
@@ -163,40 +224,75 @@ namespace EBankApp.Controllers
                 // update session.
                 await UpdateSession(userId);
 
-                return View(user);
+                var result = _mapper.Map<UpdateProfileRequest>(user);
+
+                return View(result);
             }
+        }
+
+        [HttpGet]
+        public ActionResult Create()
+        {
             return View();
         }
 
+
         [HttpPost]
-        public async Task<ActionResult> MyProfile(string userId, User userModel)
+        public async Task<ActionResult> MyProfile(string userId, UpdateProfileRequest userModel)
         {
             await LogActivity(UserActivityEnum.MY_PROFILE);
-            using (appDbContext)
+
+            if (ModelState.IsValid)
             {
-                var user = await appDbContext.Users.FindAsync(Convert.ToInt32(userId));
-
-                user.FirstName = userModel.FirstName;
-                user.LastName = userModel.LastName;
-                user.Password = userModel.Password;
-                user.PIN = userModel.PIN;
-                user.UserName = userModel.UserName;
-
-                if (user.RoleId == (int)UserRoleEnum.Admin)
+                if (!string.IsNullOrEmpty(userId))
                 {
-                    user.RoleId = userModel.RoleId;
+
+                    var id = int.Parse(userId);
+                    if(id != GetCurrentUser.Id)
+                    {
+                        return View("Error");
+                    }
+
+                    using (appDbContext)
+                    {
+                        var user = await appDbContext.Users.FindAsync(Convert.ToInt32(userId));
+
+                        if(user == null)
+                        {
+                            ClearCurrentSession();
+                            CancelCurrentSession();
+                        }
+
+                        user.FirstName = userModel.FirstName;
+                        user.LastName = userModel.LastName;
+                        user.Password = userModel.Password;
+                        user.PIN = userModel.PIN;
+                        user.UserName = userModel.UserName;
+
+                        if (user.RoleId == (int)UserRoleEnum.Admin)
+                        {
+                            user.RoleId = userModel.RoleId;
+                        }
+
+                        await appDbContext.SaveChangesAsync();
+
+                        var accounts = await appDbContext.Accounts.Where(x => x.UserId == user.Id).ToListAsync();
+
+                        // update session.
+                        await UpdateSession(userId);
+
+                        return RedirectToAction("MyProfile", "User", new { userId = user.Id });
+                    }
                 }
-
-                await appDbContext.SaveChangesAsync();
-
-                var accounts = await appDbContext.Accounts.Where(x => x.UserId == user.Id).ToListAsync();
-
-                // update session.
-                await UpdateSession(userId);
-
-                return RedirectToAction("MyProfile", "User", new { userId = user.Id });
+                else
+                {
+                    return View("Error");
+                }
             }
-            return View();
+            else
+            {
+                return View(userModel);
+            }
         }
 
         [HttpGet]
@@ -239,21 +335,7 @@ namespace EBankApp.Controllers
                 return Json(new { data = users, draw = Request["draw"], recordsTotal = totalrows, recordsFiltered = totalrowsafterfiltering }, JsonRequestBehavior.AllowGet);
 
             }
-        }
-
-        [HttpGet]
-        [EBankAuthorized]
-        public async Task<ActionResult> MyAccounts(string userId)
-        {
-            await LogActivity(UserActivityEnum.MY_ACCOUNTS);
-            using (appDbContext)
-            {
-                var id = Convert.ToInt32(userId);
-                var users = await appDbContext.Accounts.Where(x => x.UserId == id).ToListAsync();
-                return View(users);
-            }
-            return View();
-        }
+        }        
 
         [HttpGet]
         [EBankAuthorized]
@@ -262,8 +344,6 @@ namespace EBankApp.Controllers
             await LogActivity(UserActivityEnum.MANAGE_USERS);
             return View();
         }
-
-        #region JS Methods
 
         [HttpPost]
         public async Task<ActionResult> DeleteUser(int userId)
@@ -280,19 +360,5 @@ namespace EBankApp.Controllers
             }
             throw new Exception();
         }
-
-        #endregion
-
-        #region Private Methods
-        private bool IsAlreadyLoggedIn()
-        {
-            var user = HttpContext.Session["User"] as User;
-            if (user != null)
-            {
-                return true;
-            }
-            return false;
-        }
-        #endregion
     }
 }

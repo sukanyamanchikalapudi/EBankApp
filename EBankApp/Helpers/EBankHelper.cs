@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EBankApp.Controllers
+namespace EBankApp.Helpers
 {
     public static class EBankHelper
     {
@@ -9,7 +9,7 @@ namespace EBankApp.Controllers
             var random = new Random();
             string s = string.Empty;
             for (int i = 0; i < length; i++)
-                s = String.Concat(s, random.Next(length).ToString());
+                s = string.Concat(s, random.Next(length).ToString());
             return s;
         }
     }

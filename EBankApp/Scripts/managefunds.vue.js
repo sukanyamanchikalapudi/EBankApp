@@ -1,4 +1,4 @@
-﻿var dashboardApp = new Vue({
+﻿var manageFundsApp = new Vue({
     el: "#manageFundsApp",
     data: {
         currencies: [] = [],
@@ -19,7 +19,8 @@
             from: "",
             to: "",
             userId: ""
-        }
+        },
+        modelStateErrors: [] = []
     },
     created: function () {
         this.fetchCurrencies();
@@ -34,7 +35,7 @@
             fetch(url)
                 .then(res => { return res.json() })
                 .then(res => {
-                    console.log(res);
+                    this.currencies = [];
                     let s = JSON.parse(res);
                     s.forEach(c => {
                         this.currencies.push(c);
@@ -47,10 +48,12 @@
             fetch(url + "?userId=" + id)
                 .then(res => { return res.json() })
                 .then(res => {
+                    this.accounts = [];
+                    this.accountNumbers = [];
                     res.Accounts.forEach(a => {
                         this.accounts.push({
                             accountNumber: a.AccountNumber,
-                            accountBalance: a.AccountBalance,
+                            accountBalance: utilitiesApp.formatCurrency(a.AccountBalance, a.Currency),
                             accountType: a.AccountType
                         });
                     })
@@ -74,7 +77,12 @@
             };
 
             $.post(url, data).done(function (resp) {
-                window.location.href = resp.RedirectUrl;
+                if (resp.RedirectUrl == "" && resp.ErrorMessages != null) {
+                    self.modelStateErrors = [...resp.ErrorMessages];
+                    console.log(self.modelStateErrors);
+                } else {
+                    window.location.href = resp.RedirectUrl;
+                }
             }).fail(function (resp) {
                 window.location.href = resp.RedirectUrl;
             }).always(function () {
@@ -97,7 +105,14 @@
             };
 
             $.post(url, data).done(function (resp) {
-                window.location.href = resp.RedirectUrl;
+                if (resp.RedirectUrl == "" && resp.ErrorMessages != null) {
+                    this.modelStateErrors = [];
+                    resp.ErrorMessages.forEach(e => {
+                        this.modelStateErrors.push(e);
+                    });
+                } else {
+                    window.location.href = resp.RedirectUrl;
+                }
             }).fail(function (resp) {
                 window.location.href = resp.RedirectUrl;
             }).always(function () {

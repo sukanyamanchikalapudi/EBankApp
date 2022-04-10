@@ -12,7 +12,7 @@ namespace EBankApp.Attributes
     {
         protected override bool AuthorizeCore(HttpContextBase httpContext)
         {
-            var res = httpContext.Session["User"] as User;
+            var res = httpContext.Session[ApplicationKeys.SessionKeys.User] as User;
             if (res != null)
             {
                 return true;

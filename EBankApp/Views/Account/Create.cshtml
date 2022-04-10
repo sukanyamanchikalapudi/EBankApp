@@ -1,10 +1,10 @@
 ﻿@model EBankApp.Models.AccountCreateRequest
 @using EBankApp.Models;
-@using EBankApp.Controllers
+@using EBankApp.Helpers;
 @{
     ViewBag.Title = "Create Account";
     var accountTypes = SelectListHelper.EnumSelectlist<AccountTypeEnum>(true);
-    var user = HttpContext.Current.Session["User"] as User;
+    var user = HttpContext.Current.Session[ApplicationKeys.SessionKeys.User] as User;
 }
 
 <h2>Create an Account</h2>

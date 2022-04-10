@@ -2,7 +2,7 @@
 
 @{
     ViewBag.Title = "Success";
-    var user = HttpContext.Current.Session["User"] as User;
+    var user = HttpContext.Current.Session[ApplicationKeys.SessionKeys.User] as User;
 }
 
 <div class="container success-page-div">

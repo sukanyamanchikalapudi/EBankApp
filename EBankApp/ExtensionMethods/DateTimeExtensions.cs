@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EBankApp.Controllers
+namespace EBankApp.ExtensionMethods
 {
     public static class DateTimeExtensions
     {

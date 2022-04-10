@@ -3,7 +3,7 @@
 
 @{
     ViewBag.Title = "Transaction Report";
-    var user = HttpContext.Current.Session["User"] as User;
+    var user = HttpContext.Current.Session[ApplicationKeys.SessionKeys.User] as User;
 }
 
 <h2>Transaction Reports</h2>

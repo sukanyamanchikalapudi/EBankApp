@@ -1,7 +1,8 @@
 ﻿@using EBankApp.Models
+@using EBankApp.Controllers
 @{
-    var user = HttpContext.Current.Session["User"] as User;
-    var accounts = HttpContext.Current.Session["Accounts"] as List<Account>;
+    var user = HttpContext.Current.Session[ApplicationKeys.SessionKeys.User] as User;
+    var accounts = HttpContext.Current.Session[ApplicationKeys.SessionKeys.Accounts] as List<Account>;
     bool isAuthenticated = user != null;
 }
 <!DOCTYPE html>
@@ -15,7 +16,7 @@
     <link rel="icon" type="image/x-icon" href="~/Content/Images/favicon.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=IBM+Plex+Sans+Arabic:wght@300&display=swap" rel="stylesheet">
+    @*<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=IBM+Plex+Sans+Arabic:wght@300&display=swap" rel="stylesheet">*@
     <script src="https://kit.fontawesome.com/ef19713432.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
 </head>
@@ -47,15 +48,11 @@
                         Hello! @user.FirstName
                     </header>
 
-                    <a href="@Url.Action("Dashboard","User")" class="">
-                        <i class="fas fa-home"></i>
-                        <span>Dashboard</span>
-                    </a>
                     <a href="@Url.Action("MyProfile","User",new { userId = user.Id })">
-                        <i class="fas fa-user"></i><span>My Profile</span>
+                        <i class="fas fa-user"></i><span>Profile</span>
                     </a>
                     <a href="@Url.Action("MyAccounts","Account",new { userId = user.Id })">
-                        <i class="fas fa-door-closed"></i>   <span>MY ACCOUNTS</span>
+                        <i class="fas fa-door-closed"></i>   <span>ACCOUNTS</span>
                     </a>
                     @if (user.RoleId == (int)UserRoleEnum.Admin)
                     {
@@ -101,7 +98,7 @@
             </div>
         </div>
         <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+            <p>&copy; @DateTime.Now.Year - EBank</p>
         </footer>
     </div>
 
