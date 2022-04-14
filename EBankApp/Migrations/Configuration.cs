@@ -19,7 +19,7 @@ namespace EBankApp.Migrations
             try
             {
                 context.Users.AddOrUpdate(
-                new User { Id = 1, FirstName = "Admin", LastName = "EBank", Password = "Admin", PIN = "Admin", UserName = "Admin" }
+                new User { Id = 1, FirstName = "Adminmmmm", LastName = "EBank", Password = "Adminmmm", PIN = "888605", UserName = "Adminmmm" }
             );
 
                 context.Roles.AddOrUpdate(
