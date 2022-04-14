@@ -1,4 +1,4 @@
-﻿var dashboardApp = new Vue({
+﻿var transactionReportApp = new Vue({
     el: "#transactionReportApp",
     data: {
         currencies: [] = [],

@@ -7,14 +7,14 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap.min.css" />
 
 <div class="p-20">
-    <h2>My Accounts</h2>
-
-    @if (user.Accounts.Count < 2)
+    <h2> <i class="fas fa-file-invoice"></i> My Accounts </h2>
+    @if (user.Accounts.Count < 2 || user.RoleId == (int)UserRoleEnum.Admin)
     {
         <p>
-            @Html.ActionLink("Create New", "Create")
+            @Html.ActionLink("Create new account", "Create")
         </p>
     }
+    <hr />
 
     <table id="myAccountsDataTable" class="table table-striped table-bordered" style="width:100%">
         <thead>

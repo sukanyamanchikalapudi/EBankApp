@@ -34,7 +34,7 @@
                 }
                 else
                 {
-                    <li>@Html.ActionLink("Logout " + user.FirstName, "Logout", "User")</li>
+                    <li><i class="fas fa-sign-out-alt"></i> @Html.ActionLink("Logout " + user.FirstName, "Logout", "User") </li>
                 }
             </ul>
         </div>
@@ -44,15 +44,15 @@
             @if (isAuthenticated)
             {
                 <div class="sidebar" style="max-height:95vh; overflow-y:auto;">
-                    <header style="display:flex;flex-direction:column;">
-                        Hello! @user.FirstName
+                    <header>
+                        <i class="fab fa-ello"></i> <em>Welcome</em>  @user.FirstName
                     </header>
 
                     <a href="@Url.Action("MyProfile","User",new { userId = user.Id })">
                         <i class="fas fa-user"></i><span>Profile</span>
                     </a>
                     <a href="@Url.Action("MyAccounts","Account",new { userId = user.Id })">
-                        <i class="fas fa-door-closed"></i>   <span>ACCOUNTS</span>
+                        <i class="fas fa-file-invoice"></i>   <span>ACCOUNTS</span>
                     </a>
                     @if (user.RoleId == (int)UserRoleEnum.Admin)
                     {
@@ -66,16 +66,16 @@
                             <i class="fas fa-list-ul"></i>  <span>TRANSACTIONS</span>
                         </a>
                     }
-                    <a href="@Url.Action("QuickTransfer","Account")">
-                        <i class="fas fa-location-arrow"></i>
-                        <span>QUICK TRANSFER</span>
-                    </a>
+                <a href="@Url.Action("QuickTransfer","Account")">
+                    <i class="fas fa-paper-plane"></i>
+                    <span>QUICK TRANSFER</span>
+                </a>
                     <a href="@Url.Action("ManageFunds","Account")">
-                        <i class="fas fa-pound-sign"></i>  <span>MANAGE FUNDS</span>
+                        <i class="fas fa-coins"></i>  <span>MANAGE FUNDS</span>
                     </a>
 
                     <a href="@Url.Action("DownloadTransactionReport","Account")">
-                        <i class="fas fa-download"></i>  <span>TRANSACTION REPORT</span>
+                        <i class="fas fa-chart-line"></i> <span>TRANSACTION REPORT</span>
                     </a>
                 </div>
 
@@ -109,13 +109,13 @@
     <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
     @RenderSection("scripts", required: false)
     <script>
-                                                                                        //$(document)
-                                                                                        //    .ajaxStart(function () {
-                                                                                        //        $('#AjaxLoader').show();
-                                                                                        //    })
-                                                                                        //    .ajaxStop(function () {
-                                                                                        //        $('#AjaxLoader').hide();
-                                                                                        //    });
+            //$(document)
+            //    .ajaxStart(function () {
+            //        $('#AjaxLoader').show();
+            //    })
+            //    .ajaxStop(function () {
+            //        $('#AjaxLoader').hide();
+            //    });
     </script>
 </body>
 </html>

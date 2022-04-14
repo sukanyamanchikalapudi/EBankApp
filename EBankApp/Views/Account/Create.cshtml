@@ -7,7 +7,7 @@
     var user = HttpContext.Current.Session[ApplicationKeys.SessionKeys.User] as User;
 }
 
-<h2>Create an Account</h2>
+<h2><i class="fas fa-file-invoice"></i> Create an Account</h2>
 
 @using (Html.BeginForm())
 {
@@ -39,7 +39,7 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="Create" class="btn btn-success" />
             </div>
         </div>
     </div>

@@ -6,12 +6,12 @@
     var user = HttpContext.Current.Session[ApplicationKeys.SessionKeys.User] as User;
 }
 
-<h2>Manage Funds</h2>
-
+<h2><i class="fas fa-coins"></i> Manage Funds</h2>
+<hr />
 <div class="container" id="manageFundsApp">
     <ul class="nav nav-tabs">
-        <li class="active"><a data-toggle="tab" href="#ExchangeCurrency">Exchange Currency</a></li>
-        <li><a data-toggle="tab" href="#IntraBankTransfer">Intra-bank Transfer</a></li>
+        <li class="active"><a data-toggle="tab" href="#ExchangeCurrency"><i class="fas fa-exchange-alt"></i> Exchange Currency</a></li>
+        <li><a data-toggle="tab" href="#IntraBankTransfer"><i class="fas fa-arrows-alt-h"></i> Intra-bank Transfer</a></li>
     </ul>
     <div class="tab-content">
         <!-- Exchange money -->
@@ -65,31 +65,31 @@
         <div id="IntraBankTransfer" class="tab-pane fade">
             <div class="row">
                 <div class="col-sm-6 p-20">
-                    <form class="form-horizontal">
+                    <form class="form-horizontal" id="intraBankTransferForm">
                         <div class="form-group">
-                            <label for="from-currency" class="obligatory">From</label>
-                            <select class="form-control" id="from-currency" v-model="transferMoney.from">
+                            <label for="int-tran-from-currency" class="obligatory">From</label>
+                            <select class="form-control" id="int-tran-from-currency" name="int-tran-from-currency" v-model="transferMoney.from" required>
                                 <option v-for="accountNum in accountNumbers" v-bind:value="accountNum">{{accountNum}}</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="from-currency" class="obligatory">To</label>
-                            <select class="form-control" id="from-currency" v-model="transferMoney.to">
+                            <label for="int-tran-to-currency" class="obligatory">To</label>
+                            <select class="form-control" id="int-tran-to-currency" name="int-tran-to-currency" v-model="transferMoney.to" required>
                                 <option v-for="accountNum in accountNumbers" v-bind:value="accountNum">{{accountNum}}</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="from-currency" class="obligatory">Currency</label>
-                            <select class="form-control" id="from-currency" v-model="transferMoney.currency">
+                            <label for="int-tran-currency" class="obligatory">Currency</label>
+                            <select class="form-control" id="int-tran-currency" v-model="transferMoney.currency" required>
                                 <option v-for="currency in currencies" v:bind:value="currency">{{currency}}</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="amount" class="obligatory">Amount:</label>
-                            <input type="number" class="form-control" id="amount" v-model="transferMoney.amount" placeholder="Enter Amount" name="amount">
+                            <label for="int-tran-amount" class="obligatory">Amount:</label>
+                            <input type="number" class="form-control" id="int-tran-amount" v-model="transferMoney.amount" placeholder="Enter Amount" name="int-tran-amount"  min="1" max="1000000" required>
                         </div>
                         <div class="form-group">
-                            <button type="button" v-on:click="interBankTransferMoney" class="btn btn-primary active">Transfer</button>
+                            <button type="button" id="intraBankTransferMoneyBtn" class="btn btn-primary active">Transfer</button>
                         </div>
                     </form>
                 </div>
@@ -124,6 +124,16 @@
 
                 if ($("#exchangeCurrencyForm").valid()) {
                     manageFundsApp.exchangeMoneyFunc();
+                }
+            });
+
+            $(document).on('click', '#intraBankTransferMoneyBtn', function (e) {
+                e.preventDefault();
+                $(this).removeData("validator").removeData("unobtrusiveValidation");//remove the form validation
+                $.validator.unobtrusive.parse($(this));//add the form validation
+
+                if ($("#intraBankTransferForm").valid()) {
+                    manageFundsApp.interBankTransferMoney();
                 }
             });
         });
